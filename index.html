@@ -6,20 +6,22 @@
     <link rel="stylesheet" href="css/index-style.css">
 
     <!-- js imports -->
-    <script type="text/javascript" src="js/helloworld-script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/dataset.js"></script>
+    <script type="text/javascript" src="js/pca.js"></script>
 </head>
 
 <body>
     <div class = "container-fluid" style="height: 100vh;">
         <div class = "row h-100">
-            <div class = "col-lg-5 p-3 text-center" style="background-color: yellow;">
+            <div class = "col-lg-4 p-3 text-center" style="background-color: yellow;">
                 <h3 class = "m-3">Map</h3>
             </div>
-            <div class = "col-lg-7">
+            <div class = "col-lg-8">
                 <div class="row h-50">
                     <div class="col-lg-8 p-3 text-center" style="background-color: orange;">
                         <h3 class = "m-3">Click on button to execute js script</h3>
-                        <button type="button" class="btn btn-primary" onclick="helloworld()">Click me</button>
+                        <button type="button" class="btn btn-primary" onclick="pca()">Click me</button>
                     </div>
                     <div class="col-lg-4 p-3 text-center" style="background-color: orangered;">
                         <h3 class = "m-3">Control panel</h3>
