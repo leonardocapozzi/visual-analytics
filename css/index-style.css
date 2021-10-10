@@ -1,4 +1,51 @@
-* {
-    margin: 0px;
-    padding: 0px;
+ /*---------MAP-----------*/ 
+#mapId{
+    width: 33%;
+    height: 100%;
+    float: left;
+} 
+
+div.tooltip {
+      position: fixed;
+      background-color: white;
+      border: 1px solid black;
+      color: black;
+      font-weight: bold;
+      padding: 4px 8px;
+      display: none;
+}
+  
+path {
+    stroke-width: 0.25px;
+    stroke: #ffffff;
+    fill: #000000;
+    cursor: pointer;
+}
+
+
+#recLegendMap {
+    fill: #ffffff;
+    opacity: 0.4;
+}
+
+/*----------END MAP------------*/
+
+#pcaId{
+    width: 46%;
+    height: 50%;
+    float: left;
+    position: relative;
+}
+#controlId{
+    width: 21%;
+    height: 50%;
+    float: left;
+    position: relative;
+   
+}
+#paralId{
+    width: 67%;
+    height: 50%;
+    float: left;
+    position: relative;
 }
