@@ -219,7 +219,3 @@ legend.append("text")
     .attr("y", 155)
     .attr("dy", ".35em")
     .text(function(d) { return d});
-
-
-
-	
