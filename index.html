@@ -2,8 +2,12 @@
 
 <head>
     <link rel="stylesheet" href="css/index-style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
     <script src="https://d3js.org/d3-queue.v3.min.js"></script>
@@ -13,17 +17,18 @@
     <script src="https://d3js.org/d3.v4.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://d3js.org/d3.v4.js"></script>
     <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
-
-    <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
     
     <!-- js imports -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script type="text/javascript" src="js/dataset.js"></script>
-    <script type="text/javascript" src="js/pca.js"></script>
+    <script src="https://unpkg.com/underscore@1.13.1/underscore-umd-min.js"></script>
+
+    <script type="module" src="js/dataset.js"></script>
+    <script type="module" src="js/pca/utils/matrix-operations.js"></script>
+    <script type="module" src="js/pca/pca.js"></script>
+    <script type="module" src="js/index.js"></script>
 
 </head>
 
@@ -36,7 +41,7 @@
         
         <div class="col-lg-8 p-3 text-center" style="background-color: orange;" id ="pcaId">
             <h3 class = "m-3">Click on button to execute js script</h3>
-            <button type="button" class="btn btn-primary" onclick="pca()">Click me</button>
+            <button id = "test_button" type="button" class="btn btn-primary">Click me</button>
         </div>
 
         <div class="col-lg-4 p-3 text-center" style="background-color: orangered;" id = "controlId">
@@ -47,12 +52,9 @@
             <h3 class = "m-3">Parallel</h3>
         </div>
     </div>
-
+ 
     <!--js map import-->
     <script src="js/map.js"></script>
-
-
-     
    
 </body>
 
