@@ -1,5 +1,5 @@
-var width = 600,
-height = 700;
+var width = 500,
+height = 680;
 
 var margin = { top: -5, right: -5, bottom: -5, left: -5 }
 
@@ -38,10 +38,10 @@ d3.json("data/manhattan.geojson", function(error, data){
 		.enter()
 		.append("path")
 		.attr("d", path)
-		.on( "mouseover", showTooltip)
-		.on( "mouseout", hideTooltip)
-		.on( "mousemove", moveTooltip)
-		.on("click", selectBorough)
+		//.on( "mouseover", showTooltip)
+		//.on( "mouseout", hideTooltip)
+		//.on( "mousemove", moveTooltip)
+		//.on("click", selectBorough)
 		.style("opacity", 0.7)
 		.attr("transform", "translate(" + margin.left + "," + margin.right + ")")
 		.call(zoom);	
@@ -72,7 +72,7 @@ function selectBorough(d){
 	}
 	
 }
-
+/*
 //Create a tooltip, hidden at the start
 var tooltip = d3.select("#mapId")
 	.append("div")
@@ -88,7 +88,6 @@ function showTooltip(d) {
 		.text(d.properties.name);
 	d3.select(this)
 	.style("opacity", 2)
-
 }
 
 //Move the tooltip to track the mouse
@@ -110,6 +109,8 @@ function hideTooltip() {
 	}
 			
 }
+*/
+
 
 //Group for the map features
 var features = svg.append("g")
@@ -118,7 +119,7 @@ var features = svg.append("g")
 /*-----------------------SLIDER----------------------*/
 
 var leafletCont= d3.select('#mapId').append('div').attr('class', 'leaflet-control-container')
-                                    .append('div').attr('class','leaflet-top leaflet-left')
+                                    .append('div').attr('class','leaflet-top leaflet-left').style("margin-top",	"40px")
                                     .append('div').attr('id','slide')
 									.attr('class','leaflet-control-zoom leaflet-bar leaflet-control leaflet-zoom-anim')
 
@@ -175,7 +176,7 @@ const base_legend = d3.select("body").selectAll('svg')
 	.append("rect")
 	.attr('id',"recLegendMap")
 	.attr("x",15)
-	.attr("y",100) 
+	.attr("y",130) 
 	.attr("width", 120 )
 	.attr("height", 160 )
 	.attr("rx","12")
@@ -188,14 +189,14 @@ const label1 = d3.select("svg").append('g')
 	.append("text")
 	.text("NUMBER OF")
 	.attr("x", 27)
-	.attr("y", 122) 
+	.attr("y", 152) 
 	.style('position', 'fixed')
 
 const label2 = d3.select("svg").append('g')
 	.append("text")
 	.text("ACCIDENTS")
 	.attr("x", 28)
-	.attr("y", 138) 
+	.attr("y", 168) 
 	.style('position', 'fixed')	
 
 const legend = d3.select("svg").append('g')
@@ -209,13 +210,106 @@ const legend = d3.select("svg").append('g')
 
 legend.append("rect")
 	.attr("x", 32)
-	.attr("y", 145) 
+	.attr("y", 175) 
     .attr("width", 18)
     .attr("height", 18)
     .style("fill", colorScale);
 	
 legend.append("text")
     .attr("x", 62)
-    .attr("y", 155)
+    .attr("y", 185)
     .attr("dy", ".35em")
     .text(function(d) { return d});
+
+/*------------------BUBBLE----------------------*/
+
+var marker = [];
+var checkbox_day = document.getElementById("day");
+var checkbox_night = document.getElementById("night");
+
+var data = DataSetFactory.getInstance().data;
+
+console.log("here", data);
+
+//Create a tooltip, hidden at the start
+var tooltip = d3.select("#mapId")
+	.append("div")
+	.attr("class","tooltip");
+
+//Position of the tooltip relative to the cursor
+var tooltipOffset = {x: 5, y: -25};
+
+//Create a tooltip, hidden at the start
+function showTooltip(d) {
+	tooltip.style("display","block")
+	.html(d[6] + "<br>" + d[5] + 
+	"<br>" + d[4] +  "<br>" + d[3]  )
+	
+}
+
+//Move the tooltip to track the mouse
+function moveTooltip() {
+	tooltip.style("top",(d3.event.pageY + tooltipOffset.y) + "px")
+		.style("left",(d3.event.pageX + tooltipOffset.x) + "px");
+}
+
+//Create a tooltip, hidden at the start
+function hideTooltip() {
+	tooltip.style("display","none");
+}
+
+function drawCircles(marker){
+	d3.select("g") 
+	.selectAll("circle")
+	.data(marker).enter()
+	.append("circle")
+	.attr("cx", function (d) { return projection(d)[0]; })
+	.attr("cy", function (d) { return projection(d)[1]; })
+	.attr("r", 2)
+	.style("fill", "red")
+	.attr("stroke", "black")
+	.attr("stroke-width", 1)
+	.attr("transform", "translate(" + margin.left + "," + margin.right + ")")
+	.on( "mouseover", showTooltip)
+	.on( "mouseout", hideTooltip)
+	.on( "mousemove", moveTooltip)
+	.call(zoom);
+}  
+
+
+function removeCirlces(removeMarker){
+	d3.select("g")
+		.selectAll("circle")
+		.style("opacity", 0)
+}
+
+var removeMarker = []
+function showDetails(){
+	var count = 0
+	for(var i in data){
+		var info_accident = []
+		if(checkbox_day.checked == true){
+			
+			if(data[i].Sunrise_Sunset == 'Day'){
+				count++
+				var long = data[i].Start_Lng; //0
+				var lat = data[i].Start_Lat; //1
+				var id = data[i].ID; //2
+				var ss = data[i].Sunrise_Sunset; //3
+				var time = data[i].Start_Time; //4
+				var severity = data[i].Severity; //5
+				var street = data[i].Street; //6
+				info_accident.push(long, lat, id, ss, time, severity, street)
+				marker.push(info_accident)
+			}
+		}
+		else if (checkbox_day.checked == false){
+		//	removeMarker = marker.filter(d => d == (ss = 'Day'))
+			removeCirlces(removeMarker)
+		}
+	}
+	console.log("count", count)
+	console.log("marker", marker)
+	drawCircles(marker)
+}
+

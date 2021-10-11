@@ -15,7 +15,6 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://d3js.org/d3.v4.js"></script>
     <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
 
     <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
@@ -29,22 +28,27 @@
 
 <body>
     
-    <div class = "container" style="height: 97vh;">
-        <div id = "mapId"  class = "col-lg-5 p-3" style="background-color: lightblue;">
-            <svg id = "map"></svg>    
+    <div class = "container" style="height: 100vh;">
+        <div id = "mapId" style="background-color: lightblue;">
+            <svg id = "map"></svg> 
+            <div id="my_dataviz"></div>   
         </div>
         
-        <div class="col-lg-8 p-3 text-center" style="background-color: orange;" id ="pcaId">
-            <h3 class = "m-3">Click on button to execute js script</h3>
+        <div id ="pcaId" style="background-color: orange;">
+            <h3>Click on button to execute js script</h3>
             <button type="button" class="btn btn-primary" onclick="pca()">Click me</button>
         </div>
 
-        <div class="col-lg-4 p-3 text-center" style="background-color: orangered;" id = "controlId">
-            <h3 class = "m-3">Control panel</h3>
+        <div id = "controlId" style="background-color: orangered;">
+            <h3>Control panel</h3>
+            <label for="day">
+                <input class ="yearCheckbox" type="checkbox" id="day" value="Day" onclick="showDetails();"/>Day</label>
+            <label for="night">
+                <input class ="yearCheckbox" type="checkbox" id="night" value="Night"/>Night</label>
         </div>
     
-        <div class="col-lg-12 p-3 text-center" style="background-color: blueviolet;" id = "paralId">
-            <h3 class = "m-3">Parallel</h3>
+        <div id = "paralId" style="background-color: blueviolet;">
+            <h3>Parallel</h3>
         </div>
     </div>
 
