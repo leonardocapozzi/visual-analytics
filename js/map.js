@@ -230,8 +230,6 @@ var checkbox_night = document.getElementById("night");
 
 var data = DataSetFactory.getInstance().data;
 
-console.log("here", data);
-
 //Create a tooltip, hidden at the start
 var tooltip = d3.select("#mapId")
 	.append("div")
@@ -288,6 +286,21 @@ function selectBubble(d){
 	
 }
 
+var accidents_list = []
+for(var i in data){
+	var long = data[i].Start_Lng; //0
+	var lat = data[i].Start_Lat; //1
+	var id = data[i].ID; //2
+	var ss = data[i].Sunrise_Sunset; //3
+	var time = data[i].Start_Time; //4
+	var severity = data[i].Severity; //5
+	var street = data[i].Street; //6
+	var zipcode = data[i].Zipcode; //7
+	var info_accident = [long, lat, id, ss, time, severity, street, zipcode]
+	accidents_list.push(info_accident)
+}	
+console.log("accident list", accidents_list)
+
 function drawCircles(marker){
 	d3.select("g") 
 	.selectAll("circle")
@@ -298,7 +311,7 @@ function drawCircles(marker){
 	//.attr("r", function(d){ if (d[5] == 1.0) return 2; else if(d[5] == 2.0) return 4; else if(d[5] == 3.0) return 6; else return 8;})
 	//.style("fill", "red")
 	.attr("r", 2)
-	.style("fill", function(d){ if (d[5] == 1.0) return '#fecc5c'; else if(d[5] == 2.0) return '#fd8d3c'; 
+	.style("fill", function(d){ if (d[5] == 1.0) return '#fecc5c'; else if(d[5] == 2.0) return '#fd8d3c';
 	else if(d[5] == 3.0) return '#f03b20'; else return '#bd0026';})
 	.style("opacity", 0.7)
 	.attr("stroke", "black")
@@ -312,40 +325,31 @@ function drawCircles(marker){
 }  
 
 
-function removeCirlces(removeMarker){
-	d3.select("g")
-		.selectAll("circle")
-		.style("opacity", 0)
+function removeCircles(removeMarker){
+	d3.select("g") 
+	.selectAll("circle")
+	.data(removeMarker).remove()
 }
 
-var removeMarker = []
+var accident_day = []
+var accident_night = []
 function showDetails(){
-	var count = 0
-	for(var i in data){
-		var info_accident = []
-		if(checkbox_day.checked == true){
-			
-			if(data[i].Sunrise_Sunset == 'Day'){
-				count++
-				var long = data[i].Start_Lng; //0
-				var lat = data[i].Start_Lat; //1
-				var id = data[i].ID; //2
-				var ss = data[i].Sunrise_Sunset; //3
-				var time = data[i].Start_Time; //4
-				var severity = data[i].Severity; //5
-				var street = data[i].Street; //6
-				var zipcode = data[i].Zipcode; //7
-				info_accident.push(long, lat, id, ss, time, severity, street, zipcode)
-				marker.push(info_accident)
-			}
-		}
-		else if (checkbox_day.checked == false){
-		//	removeMarker = marker.filter(d => d == (ss = 'Day'))
-			removeCirlces(removeMarker)
-		}
+	if(checkbox_day.checked == true){
+		accident_day = accidents_list.filter(d => d[3] === 'Day')
+		console.log(accident_day)
+		drawCircles(accident_day)
+		
 	}
-	console.log("count", count)
-	console.log("marker", marker)
-	drawCircles(marker)
+	if(checkbox_night.checked == true){
+		accident_night = accidents_list.filter(d => d[3] === 'Night')
+		console.log(accident_night)
+		drawCircles(accident_night)
+	}
+	if(checkbox_day.checked == false){
+		removeCircles(accident_day)
+	}
+	if(checkbox_night.checked == false){
+		removeCircles(accident_night)
+	}	
 }
 
