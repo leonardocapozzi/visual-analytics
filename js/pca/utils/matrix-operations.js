@@ -1,7 +1,7 @@
 var matrixOperations = (function() {
 
     function normalize(matrix) {
-        console.log("call 'normalize' function");
+        //console.log("call 'normalize' function");
 
         var columnsAverages = new Array();
 
@@ -27,7 +27,7 @@ var matrixOperations = (function() {
     }
 
     function trasposedMatrix(matrix) {
-        console.log("call 'trasposedMatrix' function");
+        //console.log("call 'trasposedMatrix' function");
 
         var trasposedMatrix = new Array(matrix[0].length);
 
@@ -40,13 +40,11 @@ var matrixOperations = (function() {
             trasposedMatrix[i] = row;
         }
 
-        console.log(trasposedMatrix);
-
         return trasposedMatrix;
     }
 
     function multiplyTrasposedMatrixForMatrix(a, b) {
-        console.log("Call 'multiplyTrasposedMatrixForMatrix' function");
+        //console.log("Call 'multiplyTrasposedMatrixForMatrix' function");
 
         var result = new Array(a.length);
 
@@ -59,9 +57,7 @@ var matrixOperations = (function() {
                 }
             }
             result[k] = row;
-        } 
-
-        console.log(result);
+        }
 
         return result;
     }
@@ -74,23 +70,69 @@ var matrixOperations = (function() {
         }
     }
 
+    function clone(object) {
+        return JSON.parse(JSON.stringify(object));
+    }
+
+    function multiply(a, b) {
+        var aNumRows = a.length, aNumCols = a[0].length,
+            bNumCols = b[0].length, m = new Array(aNumRows);
+
+        for (var r = 0; r < aNumRows; ++r) {
+            m[r] = new Array(bNumCols); // initialize the current row
+            for (var c = 0; c < bNumCols; ++c) {
+                m[r][c] = 0;             // initialize the current cell
+                for (var i = 0; i < aNumCols; ++i) {
+                    if(isNaN(a[r][i])) {
+                        console.log("a is nan", r, i);
+                    }
+                    if(isNaN(b[i][c])) {
+                        console.log("b is Nan", i, c);
+                    }
+                    m[r][c] += a[r][i] * b[i][c];
+                }
+            }
+        }
+        return m;
+    }
+
     function covarianceMatrix(matrix) {
-        normalize(matrix);
+
         var tMatrix = trasposedMatrix(matrix);
 
-        var result = multiplyTrasposedMatrixForMatrix(tMatrix, matrix);
+        var covMatrix = multiplyTrasposedMatrixForMatrix(tMatrix, matrix);
 
-        console.log(result);
-
-        var covMatrix = divideByConstant(result, matrix.length - 1);
-
-        console.log("cov: ", covMatrix);
+        divideByConstant(covMatrix, matrix.length - 1);
 
         return covMatrix;
     }
 
+    function findEigenvaluesAndEigenvectors(squareMatrix) {
+        return math.eigs(squareMatrix);
+    }
+
+    function getPCAMatrix(datasetMatrix) {
+
+        var matrix = clone(datasetMatrix);
+
+        normalize(matrix);
+
+        var tMatrix = trasposedMatrix(matrix);
+
+        var covMatrix = covarianceMatrix(matrix);
+
+        var valuesAndVector = findEigenvaluesAndEigenvectors(covMatrix);
+
+        var W = new Array(2);  
+        
+        W[0] = valuesAndVector.vectors[valuesAndVector.vectors.length - 1];
+        W[1] = valuesAndVector.vectors[valuesAndVector.vectors.length - 2];
+
+        return trasposedMatrix(multiply(W, tMatrix));
+    }
+
     return {
-        covarianceMatrix: covarianceMatrix
+        pcaMatrix: getPCAMatrix
     }
 
 })();

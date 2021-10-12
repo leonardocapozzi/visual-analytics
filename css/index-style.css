@@ -1,3 +1,8 @@
+ * {
+     margin: 0px;
+     padding: 0px;
+ }
+ 
  /*---------MAP-----------*/ 
 #mapId{
     width: 33%;
@@ -48,4 +53,30 @@ path {
     height: 50%;
     float: left;
     position: relative;
+}
+
+/*--------- PCA SCATTER PLOT -----------*/
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    position: relative;
+    width: 960px;
+  }
+
+.axis line,
+.axis path {
+fill: none;
+stroke: #000;
+shape-rendering: crispEdges;
+}
+
+.axis text {
+fill: black;
+text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+cursor: move;
+}
+  
+label {
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }

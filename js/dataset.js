@@ -41,8 +41,7 @@ var dataSetFactory = (function(){
             return elem;
         });
     
-        // return data array
-        return data;
+        return data.slice(0, data.length -1);
     }
 
 	return {

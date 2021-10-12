@@ -18,30 +18,33 @@
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://d3js.org/d3.v4.js"></script>
     <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
     
     <!-- js imports -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://unpkg.com/underscore@1.13.1/underscore-umd-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.5.0/math.min.js"></script>
 
     <script type="module" src="js/dataset.js"></script>
     <script type="module" src="js/pca/utils/matrix-operations.js"></script>
-    <script type="module" src="js/pca/pca.js"></script>
-    <script type="module" src="js/index.js"></script>
+    <script type="module" src="js/pca/pca-matrix-builder.js"></script>
 
 </head>
 
 <body>
     
+    <!--
+
+ 
     <div class = "container" style="height: 97vh;">
         <div id = "mapId"  class = "col-lg-5 p-3" style="background-color: lightblue;">
             <svg id = "map"></svg>    
         </div>
         
         <div class="col-lg-8 p-3 text-center" style="background-color: orange;" id ="pcaId">
-            <h3 class = "m-3">Click on button to execute js script</h3>
-            <button id = "test_button" type="button" class="btn btn-primary">Click me</button>
+            <div id = "pca-container">
+
+            </div>
         </div>
 
         <div class="col-lg-4 p-3 text-center" style="background-color: orangered;" id = "controlId">
@@ -50,11 +53,16 @@
     
         <div class="col-lg-12 p-3 text-center" style="background-color: blueviolet;" id = "paralId">
             <h3 class = "m-3">Parallel</h3>
+            <button id = "test_button" type="button" class="btn btn-primary">Click me</button>
         </div>
-    </div>
+    </div>    -->
  
-    <!--js map import-->
-    <script src="js/map.js"></script>
+    <!--js map import
+    <script src="js/map.js"></script>-->
+    
+    <div id = "pca-container" style="height: 100%; width: 100%;">
+        <script type="module" src="js/pca/pca-script-v2.js"></script>
+    </div>
    
 </body>
 
