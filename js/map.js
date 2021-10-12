@@ -13,7 +13,7 @@ var svg = d3.select("svg")
 var projection = d3.geo.albers()
 	.scale(1)
 	.translate([0,0]);
-
+	
 // load geojson 
 d3.json("data/manhattan.geojson", function(error, data){
 	console.log("data", data);
@@ -38,11 +38,11 @@ d3.json("data/manhattan.geojson", function(error, data){
 		.enter()
 		.append("path")
 		.attr("d", path)
-		//.on( "mouseover", showTooltip)
-		//.on( "mouseout", hideTooltip)
-		//.on( "mousemove", moveTooltip)
+		.on( "mouseover", showTooltipBorough)
+		.on( "mouseout", hideTooltipBorough)
+		.on( "mousemove", moveTooltipBorough)
 		//.on("click", selectBorough)
-		.style("opacity", 0.7)
+		.style("opacity", 0.5)
 		.attr("transform", "translate(" + margin.left + "," + margin.right + ")")
 		.call(zoom);	
 
@@ -72,9 +72,9 @@ function selectBorough(d){
 	}
 	
 }
-/*
+
 //Create a tooltip, hidden at the start
-var tooltip = d3.select("#mapId")
+var tooltipBorough = d3.select("#mapId")
 	.append("div")
 	.attr("class","tooltip");
 
@@ -82,34 +82,35 @@ var tooltip = d3.select("#mapId")
 var tooltipOffset = {x: 5, y: -25};
 
 //Create a tooltip, hidden at the start
-function showTooltip(d) {
-	moveTooltip();
-	tooltip.style("display","block")
-		.text(d.properties.name);
+function showTooltipBorough(d) {
+	moveTooltipBorough();
+	tooltipBorough.style("display","block")
+		.text(d.properties.name)
+		.style("text", "bold")
 	d3.select(this)
-	.style("opacity", 2)
+	.style("opacity", 0.6)
 }
 
 //Move the tooltip to track the mouse
-function moveTooltip() {
-	tooltip.style("top",(d3.event.pageY + tooltipOffset.y) + "px")
+function moveTooltipBorough() {
+	tooltipBorough.style("top",(d3.event.pageY + tooltipOffset.y) + "px")
 		.style("left",(d3.event.pageX + tooltipOffset.x) + "px");
 }
 
 //Create a tooltip, hidden at the start
-function hideTooltip() {
-	tooltip.style("display","none");
+function hideTooltipBorough() {
+	tooltipBorough.style("display","none");
 	if(d3.select(this).attr("selected") === "true"){
 		d3.select(this)
-		.style("opacity", 2)
+		.style("opacity", 0.6)
 	}
 	else{
 		d3.select(this)
-		.style("opacity", 0.7)
+		.style("opacity", 0.5)
 	}
 			
 }
-*/
+
 
 
 //Group for the map features
@@ -168,8 +169,8 @@ function slided(d) {
 
 
 const colorScale = d3.scaleLinear()
-    .domain([2,10, 20, 30, 40]) //value for the legend
-    .range(['#ffffb2','#fecc5c','#fd8d3c','#f03b20','#bd0026']);	
+    .domain([/*2,*/1.0, 2.0, 3.0, 4.0]) //value for the legend
+    .range([/*'#ffffb2',*/'#fecc5c','#fd8d3c','#f03b20','#bd0026']);	
 	
 
 const base_legend = d3.select("body").selectAll('svg')
@@ -187,14 +188,14 @@ const base_legend = d3.select("body").selectAll('svg')
 	
 const label1 = d3.select("svg").append('g')
 	.append("text")
-	.text("NUMBER OF")
+	.text("SEVERITY")
 	.attr("x", 27)
 	.attr("y", 152) 
 	.style('position', 'fixed')
 
 const label2 = d3.select("svg").append('g')
 	.append("text")
-	.text("ACCIDENTS")
+	.text("GRADE")
 	.attr("x", 28)
 	.attr("y", 168) 
 	.style('position', 'fixed')	
@@ -236,15 +237,12 @@ var tooltip = d3.select("#mapId")
 	.append("div")
 	.attr("class","tooltip");
 
-//Position of the tooltip relative to the cursor
-var tooltipOffset = {x: 5, y: -25};
-
 //Create a tooltip, hidden at the start
 function showTooltip(d) {
 	tooltip.style("display","block")
-	.html(d[6] + "<br>" + d[5] + 
-	"<br>" + d[4] +  "<br>" + d[3]  )
-	
+	.html(d[2] + "<br>" + d[6] + "<br>" + d[5] + 
+	"<br>" + d[4] +  "<br>" + d[3] + "<br>" + d[7] );
+	d3.select(this).attr("stroke", "white")
 }
 
 //Move the tooltip to track the mouse
@@ -256,6 +254,38 @@ function moveTooltip() {
 //Create a tooltip, hidden at the start
 function hideTooltip() {
 	tooltip.style("display","none");
+	d3.select(this).attr("stroke", "black")
+}
+
+var selectedBubble = [];
+
+//color the selected bubble
+function selectBubble(d){
+	if (d3.select(this).attr("selected") === "true"){
+		d3.select(this)
+		.style("fill", function(d){ if (d[5] == 1.0) return '#fecc5c'; else if(d[5] == 2.0) return '#fd8d3c'; 
+		else if(d[5] == 3.0) return '#f03b20'; else return '#bd0026';})
+		.style("opacity", 0.5)
+		.attr("stroke", "black")
+		.attr("stroke-width", 0.1)
+			.attr("selected",false)
+			if(selectedBubble.includes(d[2])){
+				selectedBubble = selectedBubble.filter(b => b !== d[2])
+			}
+			console.log(d3.select(this).attr("selected"), selectedBubble)
+		
+	}
+	else{
+		d3.select(this)
+			.style("fill","#74c476")
+			.attr("stroke", "white")
+			.attr("stroke-width", 0.4)
+			.style("opacity", 0.8)
+			.attr("selected",true)
+			selectedBubble.push(d[2]);
+			console.log(d3.select(this).attr("selected"), selectedBubble)		
+	}
+	
 }
 
 function drawCircles(marker){
@@ -265,14 +295,19 @@ function drawCircles(marker){
 	.append("circle")
 	.attr("cx", function (d) { return projection(d)[0]; })
 	.attr("cy", function (d) { return projection(d)[1]; })
+	//.attr("r", function(d){ if (d[5] == 1.0) return 2; else if(d[5] == 2.0) return 4; else if(d[5] == 3.0) return 6; else return 8;})
+	//.style("fill", "red")
 	.attr("r", 2)
-	.style("fill", "red")
+	.style("fill", function(d){ if (d[5] == 1.0) return '#fecc5c'; else if(d[5] == 2.0) return '#fd8d3c'; 
+	else if(d[5] == 3.0) return '#f03b20'; else return '#bd0026';})
+	.style("opacity", 0.7)
 	.attr("stroke", "black")
-	.attr("stroke-width", 1)
+	.attr("stroke-width", 0.1)
 	.attr("transform", "translate(" + margin.left + "," + margin.right + ")")
 	.on( "mouseover", showTooltip)
 	.on( "mouseout", hideTooltip)
 	.on( "mousemove", moveTooltip)
+	.on( "click" , selectBubble )
 	.call(zoom);
 }  
 
@@ -299,7 +334,8 @@ function showDetails(){
 				var time = data[i].Start_Time; //4
 				var severity = data[i].Severity; //5
 				var street = data[i].Street; //6
-				info_accident.push(long, lat, id, ss, time, severity, street)
+				var zipcode = data[i].Zipcode; //7
+				info_accident.push(long, lat, id, ss, time, severity, street, zipcode)
 				marker.push(info_accident)
 			}
 		}
