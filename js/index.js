@@ -1,7 +1,8 @@
-import { PCA } from "./pca/pca.js";
+import { PCA } from "./pca/pca-matrix-builder.js";
 /*
 document.getElementById('test_button').addEventListener('click', function() {
     alert("ciao");
 });
 */
-window.onload = PCA.drawScatterPlot();
+
+//window.onload = PCA.drawScatterPlot();

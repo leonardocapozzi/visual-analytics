@@ -1,105 +1,132 @@
 import { dataSetFactory } from "../dataset.js";
 
-var body = d3.select('#pca-container');
+var PCAScatterPlotBuilder = (function() {
 
-//Variables
-var margin = { top: 50, right: 50, bottom: 50, left: 50 }
-var h = 500 - margin.top - margin.bottom;
-var w = 800 - margin.left - margin.right;
-//var formatPercent = d3.format('.2%');
+    //Global variables
+    var data = dataSetFactory.getInstance().data;
 
+    var margin = {top: 20, right: 20, bottom: 110, left: 200},
+    width = 700 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
 
-var data = dataSetFactory.getInstance().data;
+    var x = d3.scaleLinear().range([0, width]),
+        y = d3.scaleLinear().range([height, 0]);
 
-var focus;
+    var xAxis = d3.axisBottom(x),
+        yAxis = d3.axisLeft(y);
 
-console.log(data[0]['ID']);
+    //Define svg
+    var svg = d3.select("#pca-container").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom);
 
-console.log(margin.top + " " + margin.left + " " + margin.right + " " + margin.bottom);
+    //Append clipPath to svg
+    svg.append("defs").append("clipPath")
+        .attr("id", "clip")
+        .append("rect")
+        .attr("width", width)
+        .attr("height", height);
 
-// Scales
-var colorScale = d3.scale.category10();
-var xScale = d3.scaleLinear()
-    .domain(d3.extent(data, function(d) { return +d['X']; }))
-    .range([0,w]);
-var yScale = d3.scaleLinear()
-    .domain(d3.extent(data, function(d) { return +d['Y']; }))
-    .range([h,0]);
+    //Appen focus to svg
+    var focus = svg.append("g")
+        .attr("class", "focus")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var svg = body.append('svg')
-    .attr('height',h + margin.top + margin.bottom)
-    .attr('width',w + margin.left + margin.right);
+    function getMinMaxAndAddConstant(nameProperties, x) {
+        var minMax = d3.extent(data, function(d) { return +d[nameProperties]; });
+        minMax[0] = minMax[0] - x;
+        minMax[1] = minMax[1] + x;
+
+        return minMax;
+    }
+
+    function setDomainAxis(axis, valueDomain) {
+        axis.domain(valueDomain);
+    }
+
+    function buildDots() {
+        //Get color scale
+        var colorScale = d3.scale.category20();
+
+        var dots = focus.append("g");
     
-// X-axis
-var xAxis = d3.axisBottom(xScale);
-// Y-axis
-var yAxis = d3.axisLeft(yScale);
+        dots.selectAll("dot")
+            .data(data)
+            .enter().append('circle')
+            .attr('cx',function (d) { return x(+d['X']); })
+            .attr('cy',function (d) { return y(+d['Y']) })
+            .attr('r',4)
+            .attr('stroke','black')
+            .attr('stroke-width',1)
+            .attr('fill',function (d,i) { return colorScale(i) })
+            .on('mouseover', function () {
+                d3.select(this)
+                .transition()
+                .duration(250)
+                .attr('r',15)
+                .attr('stroke-width',3)
+            })
+            .on('mouseout', function () {
+                d3.select(this)
+                .transition()
+                .duration(400)
+                .attr('r',5)
+                .attr('stroke-width',1)
+            })
+            .append('title')
+            .text(function (d) { return '\id: ' + d['ID'] +
+                                        '\nseverity: ' + d['Severity'] });
+    }
 
-focus = svg.append("g")
-      .attr("class", "focus")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    function buildAxes() {
+        focus.append("g")
+            .attr("class", "axis axis--x")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
 
-// Circles
-var circles = svg.selectAll('circle')
-    .data(data)
-    .enter().append('circle')
-    .attr('cx',function (d) { return xScale(+d['X']); })
-    .attr('cy',function (d) { return yScale(+d['Y']) })
-    .attr('r','5')
-    .attr('stroke','black')
-    .attr('stroke-width',1)
-    .attr('fill',function (d,i) { return colorScale(i) })
-    .on('mouseover', function () {
-        d3.select(this)
-        .transition()
-        .duration(250)
-        .attr('r',15)
-        .attr('stroke-width',3)
-    })
-    .on('mouseout', function () {
-        d3.select(this)
-        .transition()
-        .duration(500)
-        .attr('r',5)
-        .attr('stroke-width',1)
-    })
-    .append('title') // Tooltip
-    .text(function (d) { return '\id: ' + d['ID'] +
-                                '\nseverity: ' + d['Severity'] });
+        focus.append("g")
+            .attr("class", "axis axis--y")
+            .call(yAxis);
+    }
 
-focus.append("g")
-    .attr("class", "axis axis--x")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis);
+    function appendTextOnXAxis(text) {
+        svg.append("text")             
+            .attr("transform","translate(" + (width - (margin.right* 2)) + " ," + 
+                    (height + (margin.top * 3)) + ")")
+            .style("text-anchor", "middle")
+            .text(text);
+    }
 
-focus.append("g")
-    .attr("class", "axis axis--y")
-    .call(yAxis);
+    function appendTextOnYAxis(text) {
+        focus.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - (margin.right * 3))
+            .attr("x", 0 - (height / 2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text(text);  
+    }
 
-/*
-svg.append('gx')
-.attr('class','axis')
-.attr('id','xAxis')
-.attr('transform', 'translate(0,' + h + ')')
-.call(xAxis)
-.append('text') // X-axis Label
-.attr('id','xAxisLabel')
-.attr('y',-10)
-.attr('x',w)
-.attr('dy','.71em')
-.style('text-anchor','end')
-.text('PC1');
-// Y-axis
-svg.append('gy')
-.attr('class','axis')
-.attr('id','yAxis')
-.call(yAxis)
-.append('text') // y-axis Label
-.attr('id', 'yAxisLabel')
-.attr('transform','rotate(-90)')
-.attr('x',0)
-.attr('y',5)
-.attr('dy','.71em')
-.style('text-anchor','end')
-.text('PC2');
-*/
+    function draw() {
+        
+        //Set domain of values x and y
+        setDomainAxis(x, getMinMaxAndAddConstant('X', 10));
+        setDomainAxis(y, getMinMaxAndAddConstant('Y', 10));
+        
+        //Define graph of dots and append of focus
+        buildDots();
+
+        //Define axes and append on focus
+        buildAxes();
+
+        //Append text on axes
+        appendTextOnXAxis('PC1');
+        appendTextOnYAxis('PC2');
+    }
+
+    return {
+        draw: draw
+    };
+})();
+
+window.onload = PCAScatterPlotBuilder.draw();
