@@ -47,7 +47,7 @@ d3.json("data/manhattan.geojson", function(error, data){
 		.call(zoom);	
 
 });
-
+/*
 var selectedBoroughs = [];
 
 //color the selected borough
@@ -71,7 +71,7 @@ function selectBorough(d){
 			console.log(d3.select(this).attr("selected"), selectedBoroughs)		
 	}
 	
-}
+}*/
 
 //Create a tooltip, hidden at the start
 var tooltipBorough = d3.select("#mapId")
@@ -85,8 +85,8 @@ var tooltipOffset = {x: 5, y: -25};
 function showTooltipBorough(d) {
 	moveTooltipBorough();
 	tooltipBorough.style("display","block")
-		.text(d.properties.name)
-		.style("text", "bold")
+	.html("<center><b>"+d.properties.name+"</b></center>")
+		
 	d3.select(this)
 	.style("opacity", 0.6)
 }
@@ -115,7 +115,7 @@ function hideTooltipBorough() {
 var features = svg.append("g")
     .attr("class","features");
 
-/*-----------------------SLIDER----------------------*/
+/*-------------------------------------------SLIDER---------------------------------------*/
 
 var leafletCont= d3.select('#mapId').append('div').attr('class', 'leaflet-control-container')
                                     .append('div').attr('class','leaflet-top leaflet-left').style("margin-top",	"40px")
@@ -163,21 +163,20 @@ function slided(d) {
 	zoom.scaleTo(d3.selectAll("svg"), d3.select(this).property("value"));
 }	
 
-/*------------LEGEND------------*/
+/*---------------------------------LEGEND-------------------------------------------*/
 
 
 const colorScale = d3.scaleLinear()
     .domain([1.0, 2.0, 3.0, 4.0]) //value for the legend
     .range(['#fecc5c','#fd8d3c','#f03b20','#bd0026']);	
 	
-
 const base_legend = d3.select("body").selectAll('svg')
 	.append("rect")
 	.attr('id',"recLegendMap")
 	.attr("x",15)
 	.attr("y",130) 
 	.attr("width", 120 )
-	.attr("height", 160 )
+	.attr("height", 140 )
 	.attr("rx","12")
 	.attr("class", "baseLegend")
 	.style('stroke','')
@@ -187,14 +186,14 @@ const base_legend = d3.select("body").selectAll('svg')
 const label1 = d3.select("svg").append('g')
 	.append("text")
 	.text("SEVERITY")
-	.attr("x", 27)
+	.attr("x", 35)
 	.attr("y", 152) 
 	.style('position', 'fixed')
 
 const label2 = d3.select("svg").append('g')
 	.append("text")
 	.text("GRADE")
-	.attr("x", 28)
+	.attr("x", 45)
 	.attr("y", 168) 
 	.style('position', 'fixed')	
 
@@ -208,20 +207,62 @@ const legend = d3.select("svg").append('g')
 	.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
 legend.append("rect")
-	.attr("x", 32)
-	.attr("y", 175) 
+	.attr("x", 30)
+	.attr("y", 178) 
     .attr("width", 18)
     .attr("height", 18)
-    .style("fill", colorScale);
+    .style("fill", colorScale)
+	.on("click", selectSeverity)
+	//.attr("stroke", "black") //per iniziare con colori già selezionati
+	//.attr("stroke-width", 2)
+	//.attr("selected",true);
 	
 legend.append("text")
-    .attr("x", 62)
-    .attr("y", 185)
+    .attr("x", 60)
+    .attr("y", 188)
     .attr("dy", ".35em")
     .text(function(d) { return d});
 
+const higher = d3.select("svg").append('g').append("text")
+    .attr("x", 80)
+    .attr("y", 188)
+    .attr("dy", ".35em")
+    .text("higher");	
 
-/*------------------BUBBLE----------------------*/
+const lower = d3.select("svg").append('g').append("text")
+    .attr("x", 80)
+    .attr("y", 248)
+    .attr("dy", ".35em")
+    .text("lower");	
+
+const line = d3.select("svg")
+	.append("line")
+	.attr("x1", 98)
+	.attr("y1", 200)
+	.attr("x2", 98)
+	.attr("y2", 242)
+	.style('stroke','black')
+    .style('stroke-width',2)
+
+const row_left = d3.select("svg")
+	.append("line")
+	.attr("x1", 98)
+	.attr("y1", 200.5)
+	.attr("x2", 90)
+	.attr("y2", 214)
+	.style('stroke','black')
+    .style('stroke-width',2)
+	
+const row_right = d3.select("svg")
+	.append("line")
+	.attr("x1", 98)
+	.attr("y1", 200.5)
+	.attr("x2", 106)
+	.attr("y2", 214)
+	.style('stroke','black')
+    .style('stroke-width',2)	
+
+/*----------------------------------BUBBLE----------------------------------------*/
 
 var checkbox_day = document.getElementById("day");
 var checkbox_night = document.getElementById("night");
@@ -233,6 +274,7 @@ var checkbox_2020 = document.getElementById("2020");
 var checkbox_all = document.getElementById("allYears");
 
 var data = DataSetFactory.getInstance().data;
+console.log("data", data)
 
 //Create a tooltip, hidden at the start
 var tooltip = d3.select("#mapId")
@@ -242,9 +284,11 @@ var tooltip = d3.select("#mapId")
 //Create a tooltip, hidden at the start
 function showTooltip(d) {
 	tooltip.style("display","block")
-	.html(d[2] + "<br>" + d[6] + "<br>" + d[5] + 
-	"<br>" + d[4] +  "<br>" + d[3] + "<br>" + d[7] );
+	.html("<b>Id:</b> " + d[2] + "<br>" + "<b>Street:</b> " + d[6] + "<br>" + 
+	"<b>Severity:</b> " + d[5] + "<br>" + "<b>Year:</b> " + d[4] +  "<br>" + "<b>D/N:</b> " + d[3] + "<br>" + 
+	"<b>Zipcode:</b> " + d[7]  + "<br>" + "<b>Duration:</b> " + d[8]);
 	d3.select(this).attr("stroke", "white")
+	.attr("stroke-width", 0.2)
 }
 
 //Move the tooltip to track the mouse
@@ -257,6 +301,7 @@ function moveTooltip() {
 function hideTooltip() {
 	tooltip.style("display","none");
 	d3.select(this).attr("stroke", "black")
+	.attr("stroke-width", 0.1)
 }
 
 var selectedBubble = [];
@@ -297,13 +342,19 @@ for(var i in data){
 	var id = data[i].ID; //2
 	var ss = data[i].Sunrise_Sunset; //3
 
-	date = new Date(data[i].Start_Time);
+	date = new Date(data[i].Start_Time)
 	var year = date.getFullYear().toString(); //4
 	
 	var severity = data[i].Severity; //5
 	var street = data[i].Street; //6
 	var zipcode = data[i].Zipcode; //7
-	var info_accident = [long, lat, id, ss, year, severity, street, zipcode]
+
+	time1 = date.getTime()
+	date2 = new Date(data[i].End_Time)
+	time2 = date2.getTime()
+	var diff = msToTime(time2-time1) //8
+
+	var info_accident = [long, lat, id, ss, year, severity, street, zipcode, diff]
 	accidents_list.push(info_accident)
 }	
 console.log("accident list", accidents_list)
@@ -331,7 +382,6 @@ function drawCircles(marker){
 	
 }  
 
-
 function removeCircles(removeMarker){
 	d3.select("g") 
 	.selectAll("circle")
@@ -339,7 +389,6 @@ function removeCircles(removeMarker){
 	console.log("rem", removeMarker)
 	removeMarker.length = 0
 	console.log("rem le", removeMarker)
-
 }
 
 var accident_day = []
@@ -424,25 +473,57 @@ function showAllYearsDetails(){
 	else removeCircles(accident_all)
 }
 
+var accident_severity_1 =  []
+var accident_severity_2 =  []
+var accident_severity_3 =  []
+var accident_severity_4 =  []
 
-
-
-
-
-
-
-/*
-//convert time
-date = new Date(data[i].Start_Time);
-	year = date.getFullYear();
-	month = date.getMonth()+1;
-	dt = date.getDate();
-	if (dt < 10) {
-		dt = '0' + dt;
-	  }
-	if (month < 10) {
-		month = '0' + month;
+function selectSeverity(d){
+	if (d3.select(this).attr("selected") === "true"){
+		d3.select(this).attr("stroke", "none")
+		.attr("selected",false)
+		if(d == 1) removeCircles(accident_severity_1)
+		if(d == 2) removeCircles(accident_severity_2)
+		if(d == 3) removeCircles(accident_severity_3)
+		if(d == 4) removeCircles(accident_severity_4)	
 	}
-	  
-	console.log(year+'-' + month + '-'+dt);
-*/	
+	else{
+		d3.select(this).attr("stroke", "black")
+		.attr("stroke-width", 2)
+		.attr("selected",true)
+		if(d == 1){
+			accident_severity_1 = accidents_list.filter(a => a[5] === "" + d + ".0")
+			console.log("acc sev ", accident_severity_1)
+			drawCircles(accident_severity_1)
+		}
+		if(d == 2){
+			accident_severity_2 = accidents_list.filter(a => a[5] === "" + d + ".0")
+			console.log("acc sev ", accident_severity_2)
+			drawCircles(accident_severity_2)
+		}
+		if(d == 3){
+			accident_severity_3 = accidents_list.filter(a => a[5] === "" + d + ".0")
+			console.log("acc sev ", accident_severity_3)
+			drawCircles(accident_severity_3)
+		}
+		if(d == 4){
+			accident_severity_4 = accidents_list.filter(a => a[5] === "" + d + ".0")
+			console.log("acc sev ", accident_severity_4)
+			drawCircles(accident_severity_4)
+		}
+		
+	}
+}
+
+function msToTime(duration) {
+
+	var seconds = Math.floor((duration / 1000) % 60),
+	  minutes = Math.floor((duration / (1000 * 60)) % 60),
+	  hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+  
+	hours = (hours < 10) ? "0" + hours : hours;
+	minutes = (minutes < 10) ? "0" + minutes : minutes;
+	seconds = (seconds < 10) ? "0" + seconds : seconds;
+  
+	return hours + ":" + minutes + ":" + seconds;
+  }
