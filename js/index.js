@@ -4,5 +4,3 @@ document.getElementById('test_button').addEventListener('click', function() {
     alert("ciao");
 });
 */
-
-//window.onload = PCA.drawScatterPlot();

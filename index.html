@@ -32,18 +32,15 @@
 </head>
 
 <body>
-    
     <!--
-
- 
-    <div class = "container" style="height: 97vh;">
+        <div class = "container" style="height: 97vh; width: 100%;">
         <div id = "mapId"  class = "col-lg-5 p-3" style="background-color: lightblue;">
             <svg id = "map"></svg>    
         </div>
         
         <div class="col-lg-8 p-3 text-center" style="background-color: orange;" id ="pcaId">
             <div id = "pca-container">
-
+                <script type="module" src="js/pca/pca-script.js"></script>
             </div>
         </div>
 
@@ -55,15 +52,25 @@
             <h3 class = "m-3">Parallel</h3>
             <button id = "test_button" type="button" class="btn btn-primary">Click me</button>
         </div>
-    </div>    -->
+    </div> 
+    -->
  
-    <!--js map import
-    <script src="js/map.js"></script>-->
+    <!-- js map import
+    <script src="js/map.js"></script>  -->
     
-    <div id = "pca-container" style="height: 100%; width: 100%;">
-        <script type="module" src="js/pca/pca-script.js"></script>
+    <div class = "container"> 
+        <div id = "mapId" style="background-color: lightblue;">
+            <svg id = "map"></svg>    
+        </div>
+        <div id = "pca-container" style="height: 50vh; width: 45%; float: left; background-color: white;">
+            <script type="module" src="js/pca/pca-script.js"></script>
+        </div>
+        <div style="height: 50vh; width: 25%; float: left; background-color: green;" style="background-color: green;">
+        </div>
     </div>
-    
+   
+    <script src="js/map.js"></script>
+
 </body>
 
 </html>
