@@ -38,12 +38,24 @@
             <button type="button" class="btn btn-primary" onclick="pca()">Click me</button>
         </div>
 
-        <div id = "controlId" style="background-color: orangered;">
+        <div id = "controlId" style="background-color: orangered;" >
             <h3>Control panel</h3>
             <label for="day">
-                <input class ="yearCheckbox" type="checkbox" id="day" value="Day" onchange="showDetails();"/>Day</label>
+                <input class ="yearCheckbox" type="checkbox" id="day" value="day" onclick="showDayDetails();"/>Day</label>
             <label for="night">
-                <input class ="yearCheckbox" type="checkbox" id="night" value="Night" onchange="showDetails();"/>Night</label>
+                <input class ="yearCheckbox" type="checkbox" id="night" value="night" onclick="showNightDetails();"/>Night</label>
+            <label for="2016">
+                <input class ="yearCheckbox" type="checkbox" id="2016" value="2016" onclick="show2016Details();"/>2016</label>
+            <label for="2017">
+                <input class ="yearCheckbox" type="checkbox" id="2017" value="2017" onclick="show2017Details();"/>2017</label>
+            <label for="2018">
+                <input class ="yearCheckbox" type="checkbox" id="2018" value ="2018" onclick="show2018Details();"/>2018</label>    
+            <label for="2019">
+                <input class ="yearCheckbox" type="checkbox" id="2019" value="2019" onclick="show2019Details();"/>2019</label>   
+            <label for="2020">
+                <input class ="yearCheckbox" type="checkbox" id="2020" value="2020" onclick="show2020Details();"/>2020</label>
+            <label for="allYears">
+                <input class ="yearCheckbox" type="checkbox" id="allYears" value="all" onclick="showAllYearsDetails();"/>All years</label>    
         </div>
     
         <div id = "paralId" style="background-color: blueviolet;">

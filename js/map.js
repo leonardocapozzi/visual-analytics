@@ -111,8 +111,6 @@ function hideTooltipBorough() {
 			
 }
 
-
-
 //Group for the map features
 var features = svg.append("g")
     .attr("class","features");
@@ -169,8 +167,8 @@ function slided(d) {
 
 
 const colorScale = d3.scaleLinear()
-    .domain([/*2,*/1.0, 2.0, 3.0, 4.0]) //value for the legend
-    .range([/*'#ffffb2',*/'#fecc5c','#fd8d3c','#f03b20','#bd0026']);	
+    .domain([1.0, 2.0, 3.0, 4.0]) //value for the legend
+    .range(['#fecc5c','#fd8d3c','#f03b20','#bd0026']);	
 	
 
 const base_legend = d3.select("body").selectAll('svg')
@@ -222,11 +220,17 @@ legend.append("text")
     .attr("dy", ".35em")
     .text(function(d) { return d});
 
+
 /*------------------BUBBLE----------------------*/
 
-var marker = [];
 var checkbox_day = document.getElementById("day");
 var checkbox_night = document.getElementById("night");
+var checkbox_2016 = document.getElementById("2016");
+var checkbox_2017 = document.getElementById("2017");
+var checkbox_2018 = document.getElementById("2018");
+var checkbox_2019 = document.getElementById("2019");
+var checkbox_2020 = document.getElementById("2020");
+var checkbox_all = document.getElementById("allYears");
 
 var data = DataSetFactory.getInstance().data;
 
@@ -292,11 +296,14 @@ for(var i in data){
 	var lat = data[i].Start_Lat; //1
 	var id = data[i].ID; //2
 	var ss = data[i].Sunrise_Sunset; //3
-	var time = data[i].Start_Time; //4
+
+	date = new Date(data[i].Start_Time);
+	var year = date.getFullYear().toString(); //4
+	
 	var severity = data[i].Severity; //5
 	var street = data[i].Street; //6
 	var zipcode = data[i].Zipcode; //7
-	var info_accident = [long, lat, id, ss, time, severity, street, zipcode]
+	var info_accident = [long, lat, id, ss, year, severity, street, zipcode]
 	accidents_list.push(info_accident)
 }	
 console.log("accident list", accidents_list)
@@ -308,8 +315,6 @@ function drawCircles(marker){
 	.append("circle")
 	.attr("cx", function (d) { return projection(d)[0]; })
 	.attr("cy", function (d) { return projection(d)[1]; })
-	//.attr("r", function(d){ if (d[5] == 1.0) return 2; else if(d[5] == 2.0) return 4; else if(d[5] == 3.0) return 6; else return 8;})
-	//.style("fill", "red")
 	.attr("r", 2)
 	.style("fill", function(d){ if (d[5] == 1.0) return '#fecc5c'; else if(d[5] == 2.0) return '#fd8d3c';
 	else if(d[5] == 3.0) return '#f03b20'; else return '#bd0026';})
@@ -321,7 +326,9 @@ function drawCircles(marker){
 	.on( "mouseout", hideTooltip)
 	.on( "mousemove", moveTooltip)
 	.on( "click" , selectBubble )
-	.call(zoom);
+	.call(zoom)
+
+	
 }  
 
 
@@ -329,27 +336,113 @@ function removeCircles(removeMarker){
 	d3.select("g") 
 	.selectAll("circle")
 	.data(removeMarker).remove()
+	console.log("rem", removeMarker)
+	removeMarker.length = 0
+	console.log("rem le", removeMarker)
+
 }
 
 var accident_day = []
 var accident_night = []
-function showDetails(){
+var accident_2016 = []
+var accident_2017 = []
+var accident_2018 = []
+var accident_2019 = []
+var accident_2020 = []
+var accident_all = []
+
+function showDayDetails(){
 	if(checkbox_day.checked == true){
 		accident_day = accidents_list.filter(d => d[3] === 'Day')
-		console.log(accident_day)
-		drawCircles(accident_day)
-		
+		console.log("day", accident_day)
+		drawCircles(accident_day)	
 	}
-	if(checkbox_night.checked == true){
-		accident_night = accidents_list.filter(d => d[3] === 'Night')
-		console.log(accident_night)
-		drawCircles(accident_night)
-	}
-	if(checkbox_day.checked == false){
-		removeCircles(accident_day)
-	}
-	if(checkbox_night.checked == false){
-		removeCircles(accident_night)
-	}	
+	else removeCircles(accident_day)			
 }
 
+function showNightDetails(){
+	if(checkbox_night.checked == true){
+		accident_night = accidents_list.filter(d => d[3] === 'Night')
+		console.log("night", accident_night)
+		drawCircles(accident_night)
+	}
+	else removeCircles(accident_night)
+}
+
+function show2016Details(){
+	if(checkbox_2016.checked == true){
+		accident_2016 = accidents_list.filter(d => d[4] === '2016')
+		console.log("2016", accident_2016)
+		drawCircles(accident_2016)
+	}
+	else removeCircles(accident_2016)
+		
+}
+
+function show2017Details(){
+	if(checkbox_2017.checked == true){
+		accident_2017 = accidents_list.filter(d => d[4] === '2017')
+		console.log("2017", accident_2017)
+		drawCircles(accident_2017)
+	}
+	else removeCircles(accident_2017)
+}
+
+function show2018Details(){
+	if(checkbox_2018.checked == true){
+		accident_2018 = accidents_list.filter(d => d[4] === '2018')
+		console.log("2018", accident_2018)
+		drawCircles(accident_2018)
+	}
+	else removeCircles(accident_2018)	
+}
+
+function show2019Details(){
+	if(checkbox_2019.checked == true){
+		accident_2019 = accidents_list.filter(d => d[4] === '2019')
+		console.log("2019", accident_2019)
+		drawCircles(accident_2019)
+	}
+	else removeCircles(accident_2019)	
+}
+
+function show2020Details(){
+	if(checkbox_2020.checked == true){
+		accident_2020 = accidents_list.filter(d => d[4] === '2020')
+		console.log("2020", accident_2020)
+		drawCircles(accident_2020)
+	}
+	else removeCircles(accident_2020)
+}
+
+function showAllYearsDetails(){
+	if(checkbox_all.checked == true){
+		accident_all = [].concat(accidents_list)
+		console.log("all", accident_all)
+		drawCircles(accident_all)
+	}
+	else removeCircles(accident_all)
+}
+
+
+
+
+
+
+
+
+/*
+//convert time
+date = new Date(data[i].Start_Time);
+	year = date.getFullYear();
+	month = date.getMonth()+1;
+	dt = date.getDate();
+	if (dt < 10) {
+		dt = '0' + dt;
+	  }
+	if (month < 10) {
+		month = '0' + month;
+	}
+	  
+	console.log(year+'-' + month + '-'+dt);
+*/	
