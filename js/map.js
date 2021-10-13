@@ -286,7 +286,7 @@ function showTooltip(d) {
 	tooltip.style("display","block")
 	.html("<b>Id:</b> " + d[2] + "<br>" + "<b>Street:</b> " + d[6] + "<br>" + 
 	"<b>Severity:</b> " + d[5] + "<br>" + "<b>Year:</b> " + d[4] +  "<br>" + "<b>D/N:</b> " + d[3] + "<br>" + 
-	"<b>Zipcode:</b> " + d[7]  + "<br>" + "<b>Duration:</b> " + d[8]);
+	"<b>Zipcode:</b> " + d[7]  + "<br>" + "<b>Duration:</b> " + d[8] + "<br>" + "<b>Season:</b> " + d[9]);
 	d3.select(this).attr("stroke", "white")
 	.attr("stroke-width", 0.2)
 }
@@ -353,8 +353,11 @@ for(var i in data){
 	date2 = new Date(data[i].End_Time)
 	time2 = date2.getTime()
 	var diff = msToTime(time2-time1) //8
+	var month = date2.getMonth()
+	var day = date2.getDay()
+	var season = computeSeason(day, month); //9
 
-	var info_accident = [long, lat, id, ss, year, severity, street, zipcode, diff]
+	var info_accident = [long, lat, id, ss, year, severity, street, zipcode, diff, season]
 	accidents_list.push(info_accident)
 }	
 console.log("accident list", accidents_list)
@@ -526,4 +529,11 @@ function msToTime(duration) {
 	seconds = (seconds < 10) ? "0" + seconds : seconds;
   
 	return hours + ":" + minutes + ":" + seconds;
-  }
+}
+
+function computeSeason(day, month){
+	if(month == 3 && day >=21 || month == 4 || month == 5 || month == 6 && day <= 21 ) return "Spring";
+	else if(month == 6 && day >=22 || month == 7 || month == 8 || month == 9 && day <= 22 ) return "Summer";
+	else if(month == 9 && day >=23 || month == 10 || month == 11 || month == 12 && day <= 21 ) return "Autumn";
+	else return "Winter";
+}
