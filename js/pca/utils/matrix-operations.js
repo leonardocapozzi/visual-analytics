@@ -1,8 +1,6 @@
 var matrixOperations = (function() {
 
     function normalize(matrix) {
-        //console.log("call 'normalize' function");
-
         var columnsAverages = new Array();
 
         for(var i = 0; i < matrix[0].length; i ++) {
@@ -22,13 +20,9 @@ var matrixOperations = (function() {
                 matrix[j][i] = matrix[j][i] - columnsAverages[i];
             }
         }
-
-        console.log(matrix);
     }
 
     function trasposedMatrix(matrix) {
-        //console.log("call 'trasposedMatrix' function");
-
         var trasposedMatrix = new Array(matrix[0].length);
 
         for(var i = 0; i < matrix[0].length; i ++) {
@@ -44,8 +38,6 @@ var matrixOperations = (function() {
     }
 
     function multiplyTrasposedMatrixForMatrix(a, b) {
-        //console.log("Call 'multiplyTrasposedMatrixForMatrix' function");
-
         var result = new Array(a.length);
 
         for(var k = 0; k < b[0].length; k ++) {
@@ -99,7 +91,6 @@ var matrixOperations = (function() {
     function covarianceMatrix(matrix) {
 
         var tMatrix = trasposedMatrix(matrix);
-
         var covMatrix = multiplyTrasposedMatrixForMatrix(tMatrix, matrix);
 
         divideByConstant(covMatrix, matrix.length - 1);
@@ -118,9 +109,7 @@ var matrixOperations = (function() {
         normalize(matrix);
 
         var tMatrix = trasposedMatrix(matrix);
-
         var covMatrix = covarianceMatrix(matrix);
-
         var valuesAndVector = findEigenvaluesAndEigenvectors(covMatrix);
 
         var W = new Array(2);  

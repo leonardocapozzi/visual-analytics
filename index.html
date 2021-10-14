@@ -25,9 +25,16 @@
     <script src="https://unpkg.com/underscore@1.13.1/underscore-umd-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.5.0/math.min.js"></script>
 
-    <script type="module" src="js/dataset.js"></script>
+    <!-- Dataset modules -->
+    <script type="module" src="js/dataset/dataset.js"></script>
+    <script type="module" src="js/dataset/dataset-filter.js"></script>
+
+    <!-- PCA modules -->
     <script type="module" src="js/pca/utils/matrix-operations.js"></script>
     <script type="module" src="js/pca/pca-matrix-builder.js"></script>
+
+    <!-- Index module -->
+    <script type="module" src="js/index.js"></script>
 
 </head>
 
@@ -63,9 +70,31 @@
             <svg id = "map"></svg>    
         </div>
         <div id = "pca-container" style="height: 50vh; width: 45%; float: left; background-color: white;">
+            
             <script type="module" src="js/pca/pca-script.js"></script>
+
         </div>
-        <div style="height: 50vh; width: 25%; float: left; background-color: green;" style="background-color: green;">
+
+        <div style="height: 50vh; width: 25%; float: left; background-color: orange" style="background-color: green;">
+            
+            <div id = "time-wrapper">
+                <h4 style = "margin-top: 2%; margin-left: 5%;">Choose accidents time:</h4>
+
+                <div style = "margin-top: 5%; margin-left: 5%;">
+
+                    <input type = "checkbox" id = "day-checkbox" checked>
+                    <p style = "float:right; margin-right: 75%;">Day</p>
+
+                </div>    
+                
+                <div style = "margin-top: 2%; margin-left: 5%;">
+
+                    <input type = "checkbox" id = "night-checkbox" checked>
+                    <p style = "float:right; margin-right: 75%;">Night</p>
+
+                </div>   
+            </div>
+
         </div>
     </div>
    

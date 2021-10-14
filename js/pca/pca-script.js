@@ -1,4 +1,4 @@
-import { dataSetFactory } from "../dataset.js";
+import { dataSetFactory } from "../dataset/dataset.js";
 
 var PCAScatterPlotBuilder = (function() {
 
@@ -66,25 +66,24 @@ var PCAScatterPlotBuilder = (function() {
             .attr('cy',function (d) { return y(+d['Y']) })
             .attr('r',4)
             .attr('stroke','black')
-            .attr('stroke-width',1)
+            .attr('stroke-width',0.2)
             .attr('fill',function (d,i) { return colorScale(i) })
             .on('mouseover', function () {
                 d3.select(this)
                 .transition()
                 .duration(250)
-                .attr('r',15)
-                .attr('stroke-width',3)
+                .attr('r',10)
+                .attr('stroke-width',1.5)
             })
             .on('mouseout', function () {
                 d3.select(this)
                 .transition()
                 .duration(400)
-                .attr('r',5)
-                .attr('stroke-width',1)
+                .attr('r',4)
+                .attr('stroke-width',0.1)
             })
             .append('title')
-            .text(function (d) { return '\id: ' + d['ID'] +
-                                        '\nseverity: ' + d['Severity'] });
+            .text(function (d) { return '\id: ' + d['ID'] });
     }
 
     function buildAxes() {
@@ -119,18 +118,18 @@ var PCAScatterPlotBuilder = (function() {
     }
     
     function yChange() {
-        d3.select('#yAxis') // redraw the yAxis
+        d3.select('#yAxis')
             .transition().duration(100)
             .call(yAxis)  
         }
 
     function xChange() {
-        d3.select('#xAxis') // redraw the xAxis
+        d3.select('#xAxis')
             .transition().duration(100)
             .call(xAxis)
     }
 
-    function redraw() {
+    function resize() {
 
         svgClientSize = svg.node().getBoundingClientRect();
 
@@ -171,15 +170,30 @@ var PCAScatterPlotBuilder = (function() {
         appendTextOnYAxis('PC2');
     }
 
+    function redraw(newData) {
+        data = newData;
+
+        setDomainAxis(x, getMinMaxAndAddConstant('X', 10));
+        setDomainAxis(y, getMinMaxAndAddConstant('Y', 10));
+
+        yChange();
+        xChange();
+
+        removeDots();
+        buildDots();
+    }
+
     return {
         draw: draw,
-        redraw: redraw
+        redraw: redraw,
+        resize: resize
     };
 })();
 
 window.onload = PCAScatterPlotBuilder.draw();
 
 window.onresize = function() {
-    console.log("redraw scatter-plot");
-    PCAScatterPlotBuilder.redraw();
+    PCAScatterPlotBuilder.resize();
 }
+
+export { PCAScatterPlotBuilder }

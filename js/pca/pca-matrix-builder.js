@@ -1,4 +1,4 @@
-import { dataSetFactory } from "../dataset.js";
+import { dataSetFactory } from "../dataset/dataset.js";
 import { matrixOperations } from "./utils/matrix-operations.js";
 
 var PCAMatrixBuilder = (function() {
@@ -50,10 +50,6 @@ var PCAMatrixBuilder = (function() {
         });
 
         return map;
-    }
-
-    function drawScatterPlot() {
-        buildScatterPlot(getPCAMatrix());
     }
 
     return {
