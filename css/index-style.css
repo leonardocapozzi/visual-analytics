@@ -1,28 +1,42 @@
- * {
+/** {
      margin: 0;
      padding: 0;
  }
- 
+ */
+
+body{
+	padding: 0%;
+	margin: 0%;
+} 
  /*---------MAP-----------*/ 
-#mapId{
-    width: 30%;
-    height: 100%;
-    float: left;
+ #map{
+    height: 90%;
+    width: 33%;
+    position: absolute;
+    left:0.1%;
+    top:5%;
+    background: lightblue;
+    border:3px solid black;
+    border-right-style: outset;
+    border-radius: 5px;
+   
 } 
 
 div.tooltip {
-      position: fixed;
-      background-color: white;
-      border: 1px solid black;
-      color: black;
-      font-weight: bold;
-      padding: 4px 8px;
-      display: none;
+    color: #222; 
+    background: #fff; 
+    border-radius: 3px; 
+    box-shadow: 0px 0px 2px 0px #a6a6a6; 
+    padding: .4em; 
+    text-shadow: #f5f5f5 0 1px 0;
+    font-size: 12px;
+    opacity: 0.8; 
+    position: absolute;
 }
   
 path {
     stroke-width: 0.25px;
-    stroke: #ffffff;
+    stroke: #b3b2b2;
     fill: #000000;
     cursor: pointer;
 }
@@ -30,37 +44,59 @@ path {
 
 #recLegendMap {
     fill: #ffffff;
-    opacity: 0.4;
+    opacity: 0.5;
+}
+
+.circle:hover{
+    stroke: black;
+    stroke-width: 4px;
 }
 
 /*----------END MAP------------*/
-/*
+
 #pcaId{
-    width: 46%;
-    height: 50%;
-    float: left;
-    position: relative;
+    width: 45.3%;
+    height: 48%;
+    top:0.5%;
+    position: absolute;
+    right:20.8%;
+    border:3px solid black;
+    border-right-style: outset;
+    border-radius: 5px;
+
 }
+
 #controlId{
-    width: 21%;
-    height: 50%;
-    float: left;
-    position: relative;
+    width: 20%;
+    height: 48%;
+    position: absolute;
+    right: 0.1%;
+    top:0.5%;
+    display: inline-block;
+    border:3px solid black;
+    border-right-style: outset;
+    border-radius: 5px;
    
 }
 #paralId{
-    width: 67%;
-    height: 50%;
-    float: left;
-    position: relative;
+    width: 66%;
+    height: 48%;
+    right: 0.1%;
+    bottom: 1%;
+    position: absolute;
+    display: inline-block;
+    background: lightblue;
+    border:3px solid black;
+    border-right-style: outset;
+    border-radius: 5px;
 }
-*/
+
 /*--------- PCA SCATTER PLOT -----------*/
-body {
+/*body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     position: relative;
     width: 100%;
-  }
+  }*/
 
 .axis line,
 .axis path {
@@ -82,8 +118,11 @@ label {
 }
 
 /*-----------GENERIC PROPERTIES-------------*/
+/*
 .container {
     height: 100vh;
     width: 100%;
     background-color: violet;
-}
+   
+    
+}*/
