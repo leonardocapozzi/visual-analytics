@@ -272,6 +272,10 @@ var checkbox_2018 = document.getElementById("2018");
 var checkbox_2019 = document.getElementById("2019");
 var checkbox_2020 = document.getElementById("2020");
 var checkbox_all = document.getElementById("allYears");
+var checkbox_spring = document.getElementById("spring");
+var checkbox_summer = document.getElementById("summer");
+var checkbox_autumn = document.getElementById("autumn");
+var checkbox_winter = document.getElementById("winter");
 
 var data = DataSetFactory.getInstance().data;
 console.log("data", data)
@@ -369,7 +373,7 @@ function drawCircles(marker){
 	.append("circle")
 	.attr("cx", function (d) { return projection(d)[0]; })
 	.attr("cy", function (d) { return projection(d)[1]; })
-	.attr("r", 2)
+	.attr("r", 2.5)
 	.style("fill", function(d){ if (d[5] == 1.0) return '#fecc5c'; else if(d[5] == 2.0) return '#fd8d3c';
 	else if(d[5] == 3.0) return '#f03b20'; else return '#bd0026';})
 	.style("opacity", 0.7)
@@ -402,6 +406,10 @@ var accident_2018 = []
 var accident_2019 = []
 var accident_2020 = []
 var accident_all = []
+var accident_spring =  []
+var accident_summer =  []
+var accident_autumn =  []
+var accident_winter =  []
 
 function showDayDetails(){
 	if(checkbox_day.checked == true){
@@ -476,6 +484,42 @@ function showAllYearsDetails(){
 	else removeCircles(accident_all)
 }
 
+function showSpringDetails(){
+	if(checkbox_spring.checked == true){
+		accident_spring = accidents_list.filter(d => d[9] === 'Spring')
+		console.log("Spring", accident_spring)
+		drawCircles(accident_spring)
+	}
+	else removeCircles(accident_spring)
+}
+
+function showSummerDetails(){
+	if(checkbox_summer.checked == true){
+		accident_summer = accidents_list.filter(d => d[9] === 'Summer')
+		console.log("Summer", accident_summer)
+		drawCircles(accident_summer)
+	}
+	else removeCircles(accident_summer)
+}
+
+function showAutumnDetails(){
+	if(checkbox_autumn.checked == true){
+		accident_autumn = accidents_list.filter(d => d[9] === 'Autumn')
+		console.log("Autumn", accident_autumn)
+		drawCircles(accident_autumn)
+	}
+	else removeCircles(accident_autumn)
+}
+
+function showWinterDetails(){
+	if(checkbox_winter.checked == true){
+		accident_winter = accidents_list.filter(d => d[9] === 'Winter')
+		console.log("Winter", accident_winter)
+		drawCircles(accident_winter)
+	}
+	else removeCircles(accident_winter)
+}
+
 var accident_severity_1 =  []
 var accident_severity_2 =  []
 var accident_severity_3 =  []
@@ -518,6 +562,8 @@ function selectSeverity(d){
 	}
 }
 
+
+/*-------------------TIME-------------------------*/
 function msToTime(duration) {
 
 	var seconds = Math.floor((duration / 1000) % 60),
