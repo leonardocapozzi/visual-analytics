@@ -1,6 +1,7 @@
 import { dataSetFilter } from "./dataset/dataset-filter.js";
 import { dataSetFactory } from "./dataset/dataset.js";
 import { PCAScatterPlotBuilder } from "./pca/pca-script.js";
+import { BubbleMapBuilder } from "./map.js";
 
 document.getElementById("time-wrapper").addEventListener('change', function(event) {
     
@@ -14,10 +15,10 @@ document.getElementById("time-wrapper").addEventListener('change', function(even
     if(!dayCheck.checked && !nightCheck.checked) {
         data = [];
     }
-    else if(!dayCheck.checked && nightCheck.checked) {
+    else if(dayCheck.checked && !nightCheck.checked) {
         data =  dataSetFilter.filterByPropertyEqualTo('Sunrise_Sunset', 'Day');
     }
-    else if(dayCheck.checked && !nightCheck.checked) {
+    else if(!dayCheck.checked && nightCheck.checked) {
         data =  dataSetFilter.filterByPropertyEqualTo('Sunrise_Sunset', 'Night');
     }
     else {
@@ -25,5 +26,6 @@ document.getElementById("time-wrapper").addEventListener('change', function(even
     }
 
     PCAScatterPlotBuilder.redraw(data);
+    BubbleMapBuilder.redraw(data);
 });
 
