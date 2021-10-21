@@ -80,18 +80,56 @@ path {
     border-radius: 5px;
    
 }
-#paralId{
+#parallelArea{
     width: 66%;
     height: 48%;
     right: 0.1%;
     bottom: 1%;
     position: absolute;
     display: inline-block;
-    background: lightblue;
     border:3px solid black;
     border-right-style: outset;
     border-radius: 5px;
 }
+
+.green{
+	fill:green;
+}
+
+svg {
+  font: 10px sans-serif;
+}
+
+.background path {
+  fill: none;
+  stroke: #ddd;
+  shape-rendering: crispEdges;
+}
+
+.foreground path {
+  fill: none;
+  stroke: steelblue;
+}
+
+.brush .extent {
+  fill-opacity: .3;
+  stroke: #fff;
+  shape-rendering: crispEdges;
+}
+
+.axis line,
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  fill: black;
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+  cursor: move;
+}
+
 
 /*--------- PCA SCATTER PLOT -----------*/
 /*body {
