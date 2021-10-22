@@ -1,14 +1,12 @@
 import { dataSetFactory } from "./dataset.js";
 
 var dataSetFilter = (function() {
-    //Global variables
-    var data = dataSetFactory.getInstance().data;    
 
-    function filterByPropertyEqualTo(propertyName, propertyValue) {
+    function filterByPropertyEqualTo(data, propertyName, propertyValue) {
         return data.filter(item => item[propertyName] == propertyValue);
     }
 
-    function filterByYears(years) {
+    function filterByYears(data, years) {
         return data.filter(item => {
             var date = new Date(item["Start_Time"]);
             var year = date.getFullYear();
@@ -23,15 +21,13 @@ var dataSetFilter = (function() {
         });
     }
 
-    function filterBySeasons(seasons) {
+    function filterBySeasons(data, seasons) {
         return data.filter(item => {
             var date = new Date(item["Start_Time"]);
             var day = date.getDay();
             var month = date.getMonth();
 
             var currentSeason = computeSeason(day, month);
-
-            console.log("season => ", currentSeason);
 
             for(var i = 0; i < seasons.length; i ++) {
                 if(currentSeason == seasons[i]) {
