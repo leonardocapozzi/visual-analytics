@@ -34,20 +34,46 @@ document.getElementById("calendar-filter-container").addEventListener('change', 
     //Get checkboxs
     var checkboxs = document.getElementsByName("year-checkbox");
 
-    var values = new Array();
+    var years = new Array();
 
     var k = 0;
 
     for(var i = 0; i < checkboxs.length; i ++) {
         if(checkboxs[i].checked) {
-            values[k] = checkboxs[i].value;
+            years[k] = checkboxs[i].value;
             k ++;
         }
     }
 
-    console.log("Values to filter by year(s) => ", values);
+    console.log("Values to filter by year(s) => ", years);
 
-    var data = dataSetFilter.filterByPropertiesAtMostOneEqualTo("Start_Time", values);
+    var data = dataSetFilter.filterByYears(years);
+
+    console.log("Data post calendar filter: ", data);
+
+    PCAScatterPlotBuilder.redraw(data);
+    BubbleMapBuilder.redraw(data);
+});
+
+document.getElementById("season-filter-container").addEventListener('change', function(event) {
+    
+    //Get checkboxs
+    var checkboxs = document.getElementsByName("season-checkbox");
+
+    var seasons = new Array();
+
+    var k = 0;
+
+    for(var i = 0; i < checkboxs.length; i ++) {
+        if(checkboxs[i].checked) {
+            seasons[k] = checkboxs[i].value;
+            k ++;
+        }
+    }
+
+    console.log("Values to filter by season(s) => ", seasons);
+
+    var data = dataSetFilter.filterBySeasons(seasons);
 
     console.log("Data post calendar filter: ", data);
 
