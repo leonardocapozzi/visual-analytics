@@ -1,7 +1,7 @@
 import { dataSetFactory } from "./dataset/dataset.js";
 
 var width = 500,
-height = 680;
+height = 720;
 
 var margin = { top: -5, right: -5, bottom: -5, left: -5 }
 
@@ -11,13 +11,14 @@ var svg = d3.select("svg")
 .attr("class", "m_map")
 .append("g");
 
+
 // create a unit projection
 var projection = d3.geo.albers()
 	.scale(1)
 	.translate([0,0]);
 	
 // load geojson 
-d3.json("data/manhattan.geojson", function(error, dataGeojson){
+window.onload = d3.json("resources/manhattan.geojson", function(error, dataGeojson){
 	console.log("dataGeojson", dataGeojson);
 
 	// create a path generator
@@ -46,7 +47,9 @@ d3.json("data/manhattan.geojson", function(error, dataGeojson){
 		//.on("click", selectBorough)
 		.style("opacity", 0.5)
 		.attr("transform", "translate(" + margin.left + "," + margin.right + ")")
-		.call(zoom);	
+		.call(zoom);
+		
+	BubbleMapBuilder.draw();	
 
 });
 
@@ -190,12 +193,29 @@ const row_right = d3.select("svg").append("line")
 	.attr("x1", 98).attr("y1", 200.5).attr("x2", 106).attr("y2", 214)
 	.style('stroke','black').style('stroke-width',2)	
 
+/*---------------------------------COMPUTE MEAN TIME--------------------------*/
+var selectedBubble = [];
+
+const show_time = d3.select("body").select('#map').append("rect")
+	.attr('id',"recLegendMap").attr("x",360).attr("y",590) 
+	.attr("width", 140 ).attr("height", 100 ).attr("rx","12")
+	.attr("class", "baseLegend").style('stroke','').style('position', 'fixed')
+
+const label3 = d3.select("svg").append('g')
+	.append("text").text("MEAN ACCIDENT")
+	.attr("x", 364).attr("y", 615) .style('position', 'fixed')
+
+const label4 = d3.select("svg").append('g')
+	.append("text").text("TIME")
+	.attr("x", 410).attr("y", 635) .style('position', 'fixed')	
+
+
 /*----------------------------------BUBBLE----------------------------------------*/
 
 var BubbleMapBuilder = (function() {
 
 	var data = dataSetFactory.getInstance().data;
-	console.log("data", data)
+	//console.log("data", data)
 
 	//Create a tooltip, hidden at the start
 	var tooltip = d3.select("#mapId")
@@ -205,8 +225,10 @@ var BubbleMapBuilder = (function() {
 	//Create a tooltip, hidden at the start
 	function showTooltip(d) {
 		var date = new Date(d.Start_Time)
+		//var time = date.getTimezoneOffset();
 		var year = date.getFullYear().toString(); 
 		var time1 = date.getTime()
+		var hour = msToTime(time1)
 		var date2 = new Date(d.End_Time)
 		var time2 = date2.getTime()
 		var diff = msToTime(time2-time1) 
@@ -214,9 +236,9 @@ var BubbleMapBuilder = (function() {
 		var day = date2.getDay()
 		var season = computeSeason(day, month); 
 		tooltip.style("display","block")
-		.html("<b>Id:</b> " + d.ID + "<br>" + "<b>Street:</b> " + d.Street + "<br>" + 
+		.html("<b>Id:</b> " + d.ID + "<br>" + "<b>Street:</b> " + d.Street + "<br>" + "<b>Zipcode:</b> "+ d.Zipcode + "<br>" +
 		"<b>Severity:</b> " + d.Severity + "<br>" + "<b>Year:</b> " + year +  "<br>" + "<b>D/N:</b> " + d.Sunrise_Sunset + "<br>" + 
-		"<b>Zipcode:</b> " + d.Zipcode  + "<br>" + "<b>Duration:</b> " + diff + "<br>" + "<b>Season:</b> " + season);
+		"<b>Time:</b> " + hour + "<br>" + "<b>Duration:</b> " + diff + "<br>" + "<b>Season:</b> " + season );
 		d3.select(this).transition()
 		.duration(250)
 		.attr('r',4)
@@ -238,7 +260,7 @@ var BubbleMapBuilder = (function() {
 		.attr("stroke-width", 0.1)
 	}
 
-	var selectedBubble = [];
+
 
 	//color the selected bubble
 	function selectBubble(d){
@@ -262,7 +284,9 @@ var BubbleMapBuilder = (function() {
 				.attr("stroke-width", 0.4)
 				.style("opacity", 0.8)
 				.attr("selected",true)
-				selectedBubble.push(d.ID);
+				selectedBubble.push(d.ID)
+			
+			
 				console.log(d3.select(this).attr("selected"), selectedBubble)		
 		}
 	}
@@ -334,6 +358,4 @@ function computeSeason(day, month){
 }
 
 
-
-window.onload = BubbleMapBuilder.draw();
 export { BubbleMapBuilder }

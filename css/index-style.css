@@ -10,11 +10,12 @@ body{
 } 
  /*---------MAP-----------*/ 
  #map{
-    height: 90%;
+    height: 98%;
     width: 33%;
     position: absolute;
     left:0.1%;
-    top:5%;
+    top:0.5%;
+    bottom:1%;
     background: lightblue;
     border:3px solid black;
     border-right-style: outset;
@@ -96,9 +97,10 @@ path {
 	fill:green;
 }
 
+/*
 svg {
   font: 10px sans-serif;
-}
+}*/
 
 .background path {
   fill: none;
