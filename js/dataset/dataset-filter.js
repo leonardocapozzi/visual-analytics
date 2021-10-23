@@ -46,10 +46,25 @@ var dataSetFilter = (function() {
         else return "Winter";
     }
 
+    function filterBySeverities(data, grades) {
+        return data.filter(item => {
+            var grade = item["Severity"];
+
+            for(var i = 0; i < grades.length; i ++) {
+                if(grades[i] == grade) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+    }
+
     return {
         filterByPropertyEqualTo: filterByPropertyEqualTo,
         filterByYears: filterByYears,
-        filterBySeasons: filterBySeasons
+        filterBySeasons: filterBySeasons,
+        filterBySeverities: filterBySeverities
     };
 
 })();

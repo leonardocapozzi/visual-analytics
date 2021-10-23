@@ -59,10 +59,29 @@ var computeFilter = (function() {
         return data;
     }
 
+    function computeSeverityFilter(data) {
+        //Get checkboxs
+       
+        var checkboxs = document.getElementsByName("severity-checkbox");
+    
+        var grades = new Array();
+    
+        var k = 0;
+    
+        for(var i = 0; i < checkboxs.length; i ++) {
+            if(checkboxs[i].checked) {
+                grades[k] = checkboxs[i].value;
+                k ++;
+            }
+        }
+    
+        return dataSetFilter.filterBySeverities(data, grades);
+    }
+
     function computeAllFilters() {
         var data = dataSetFactory.getInstance().data;
 
-        return computeTimeFilter(computeSeasonFilter(computeYearFilter(data)));
+        return computeSeverityFilter(computeTimeFilter(computeSeasonFilter(computeYearFilter(data))));
     }
 
     return {
