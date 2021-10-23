@@ -67,7 +67,8 @@ var PCAScatterPlotBuilder = (function() {
             .attr('r',4)
             .attr('stroke','black')
             .attr('stroke-width',0.2)
-            .attr('fill',function (d,i) { return colorScale(i) })
+            .attr('fill',function (d,i) { return '#74C67A'})
+            .style("opacity", 0.7)
             .on('mouseover', function () {
                 d3.select(this)
                 .transition()

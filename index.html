@@ -55,24 +55,97 @@
     
         </div>
 
-        <div id="controlId">
-            <div style="height: 100%; width: 100%; float: left; background-color: orange">
+        <div id="filter-container" class = "control-panel">
+            <div style="height: 100%; width: 100%; float: left; background-color: lightgrey">
+
+                <div id = "calendar-filter-container" style = "margin-top: 5%;">
+                    <h4 style = "margin-left: 5%;; margin-bottom: 2%;">Choose accidents year(s):</h4>
+                    
+                    <div>
+                        <div style = "width: 30%; float: left; margin-left: 5%;">
+                            <input type = "checkbox" name = "year-checkbox" value = "2016" checked>2016</input>
+                        </div>    
+                        
+                        <div style = "width: 30%; float: left;">
+                            <input type = "checkbox" name = "year-checkbox" value = "2017" checked>2017</input>    
+                        </div>
+    
+                        <div style = "width: 30%; float: left; margin-left: 5%;">
+                            <input type = "checkbox" name = "year-checkbox" value = "2018" checked>2018</input>
+                        </div>  
+                    </div>  
+                    
+                    <div>
+                        <div style = "width: 30%; float: left; margin-left: 5%;">
+                            <input type = "checkbox" name = "year-checkbox" value = "2019" checked>2019</input>    
+                        </div>
+    
+                        <div style = "width: 30%; float: left;">
+                            <input type = "checkbox" name = "year-checkbox" value = "2020" checked>2020</input>    
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id = "season-filter-container" style = "margin-top: 22%;">
+                    <h4 style = "margin-left: 5%;; margin-bottom: 2%;">Choose accidents season(s):</h4>
+                    
+                    <div>
+                        <div style = "width: 40%; float: left; margin-left: 5%;">
+                            <input type = "checkbox" name = "season-checkbox" value = "Spring" checked>Spring</input>
+                        </div>    
+                        
+                        <div style = "width: 40%; float: left;">
+                            <input type = "checkbox" name = "season-checkbox" value = "Summer" checked>Summer</input>    
+                        </div>
+                    </div>  
+                    
+                    <div>
+                        <div style = "width: 40%; float: left; margin-left: 5%;">
+                            <input type = "checkbox" name = "season-checkbox" value = "Autumn" checked>Autumn</input>    
+                        </div>
+    
+                        <div style = "width: 40%; float: left;">
+                            <input type = "checkbox" name = "season-checkbox" value = "Winter" checked>Winter</input>    
+                        </div>
+                    </div>
+                </div>
             
-                <div id = "time-wrapper">
-                    <h4 style = "margin-top: 2%; margin-left: 5%;">Choose accidents time:</h4>
-    
-                    <div style = "margin-top: 5%; margin-left: 5%;">
-    
+                <div id = "time-filter-container" style= "margin-top: 22%">
+                    
+                    <h4 style = "margin-top: 2%; margin-left: 5%;; margin-bottom: 2%;">Choose accidents time:</h4> 
+                    
+                    <div style = "width: 30%; float: left; margin-left: 5%;">
                         <input type = "checkbox" id = "day-checkbox" checked>Day</input>
-                 
-    
                     </div>    
                     
-                    <div style = "margin-top: 2%; margin-left: 5%;">
-    
-                        <input type = "checkbox" id = "night-checkbox" checked>Night</input>
-    
+                    <div style = "width: 30%; float: left;">
+                        <input type = "checkbox" id = "night-checkbox" checked>Night</input>    
+                    </div>
+                     
+                </div>
+                
+                 <div id = "severity-filter-container" style= "margin-top: 15%">
+                      <h4 style = "margin-left: 5%;; margin-bottom: 2%;">Choose accidents severity(ies):</h4>
+                    <div>
+                        <div style = "width: 40%; float: left; margin-left: 5%;">
+                            <input type = "checkbox" name = "severity-checkbox" value = "1.0" checked>1</input>
+                        </div>    
+                        
+                        <div style = "width: 40%; float: left;">
+                            <input type = "checkbox" name = "severity-checkbox" value = "2.0" checked>2</input>    
+                        </div>
                     </div>  
+                    
+                    <div>
+                        <div style = "width: 40%; float: left; margin-left: 5%;">
+                            <input type = "checkbox" name = "severity-checkbox" value = "3.0" checked>3</input>    
+                        </div>
+    
+                        <div style = "width: 40%; float: left;">
+                            <input type = "checkbox" name = "severity-checkbox" value = "4.0" checked>4</input>    
+                        </div>
+                    </div>
                      
                 </div>
     
@@ -82,46 +155,6 @@
             <script type="module" src="js/parallel.js"></script>
         </div>
     </div> 
-    
- 
-
-    
-    <!--
-    <div class = "container"> 
-        <div id = "mapId" style="background-color: lightblue;">
-            <svg id = "map"></svg>    
-        </div>
-        <div id = "pca-container" style="height: 50vh; width: 45%; float: left; background-color: white;">
-            
-            <script type="module" src="js/pca/pca-script.js"></script>
-
-        </div>
-
-        <div style="height: 50vh; width: 25%; float: left; background-color: orange" style="background-color: green;">
-            
-            <div id = "time-wrapper">
-                <h4 style = "margin-top: 2%; margin-left: 5%;">Choose accidents time:</h4>
-
-                <div style = "margin-top: 5%; margin-left: 5%;">
-
-                    <input type = "checkbox" id = "day-checkbox" checked>
-                    <p style = "float:right; margin-right: 75%;">Day</p>
-
-                </div>    
-                
-                <div style = "margin-top: 2%; margin-left: 5%;">
-
-                    <input type = "checkbox" id = "night-checkbox" checked>
-                    <p style = "float:right; margin-right: 75%;">Night</p>
-
-                </div>   
-            </div>
-
-        </div>
-    </div>
-   
-    <script src="js/map.js"></script>
--->
 </body>
 
 </html>
