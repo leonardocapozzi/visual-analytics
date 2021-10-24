@@ -1,33 +1,6 @@
 import { dataSetFactory } from "./dataset/dataset.js";
-
-var chiavi
-
-var dataSelection=[];
-
-var margin = {top: 20, right: 20, bottom: 110, left: 50},
-    margin2 = {top: 430, right: 20, bottom: 30, left: 40},
-    width = 100,
-    height = 100,
-    height2 =100;
-
-var parseDate = d3.timeParse("%b %Y");
-
-var x = d3.scaleLinear().range([0, width]),
-    x2 = d3.scaleLinear().range([0, width]),
-    y = d3.scaleLinear().range([height, 0]),
-    y2 = d3.scaleLinear().range([height2, 0]);
-
-var xAxis = d3.axisBottom(x),
-    xAxis2 = d3.axisBottom(x2),
-    yAxis = d3.axisLeft(y);
-
-
-    
-var focus;
-
-var dati
-
-var color= d3.scaleOrdinal(d3.schemeCategory10);
+//document.writeln("<script type='text/javascript' src='index.js'></script>");
+var ParallelBuilder = (function() {
 
 
 var dataset =  dataSetFactory.getInstance().data;
@@ -70,11 +43,11 @@ function buildDataMapForPCAAlgorithm(data) {
 
 var data= Array.from(buildDataMapForPCAAlgorithm(dataset).values());
 console.log("data: " ,data);
-window.onload = drawParallel(data);
+
 
 //////////DISEGNO PARALLEL////////////
 
-function drawParallel(data){
+function drawParallel(){
 
   //colore Day/Night
    // Color scale: give me a specie name, I return a color
@@ -212,7 +185,7 @@ var x = d3.scaleBand().rangeRound([0, 1200]).padding(.1),
   g.append("g")
       .attr("class", "brush")
       .each(function(d) {
-        d3.select(this).call(y[d].brush = d3.brushY().extent([[-8, 0], [8,height]]).on("brush start", brushstart).on("brush", brush_parallel_chart));
+        d3.select(this).call(y[d].brush = d3.brushY().extent([[-8, 0], [8,290]]).on("brush start", brushstart).on("brush", brush_parallel_chart));
       })
     .selectAll("rect")
       .attr("x", -8)
@@ -263,6 +236,33 @@ function brush_parallel_chart() {
 
 }
 /////////FINE DISEGNO PARALLEL////////
+function removeLines() {
+  d3.selectAll('foreground.line').remove();
+}
+
+function draw(){
+  drawParallel();
+}
+
+function redraw(newData){
+  data= newData;
+  removeLines();
+  drawParallel();
+}
+
+   return {
+        draw: draw,
+        redraw: redraw
+        
+
+};
+
+})();
+
+window.onload = ParallelBuilder.draw();
+
+export {ParallelBuilder} 
+
 
 
 
