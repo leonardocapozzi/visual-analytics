@@ -21,7 +21,6 @@ var projection = d3.geo.albers()
 	
 // load geojson 
 window.onload = d3.json("resources/manhattan.geojson", function(error, dataGeojson){
-	console.log("dataGeojson", dataGeojson);
 
 	// create a path generator
 	var path = d3.geo.path()
@@ -277,9 +276,7 @@ var BubbleMapBuilder = (function() {
 			else{
 				PCAScatterPlotBuilder.redraw(data);
 				parallelBuilder.redraw(data);	
-			}
-			
-			console.log(d3.select(this).attr("selected"), selectedBubble)	
+			}	
 
 		}
 		else{
@@ -292,12 +289,10 @@ var BubbleMapBuilder = (function() {
 			selectedBubble.push(d)
 			PCAScatterPlotBuilder.redraw(selectedBubble);
 			parallelBuilder.redraw(selectedBubble);
-			console.log(d3.select(this).attr("selected"), selectedBubble)		
 		}
 	}
 	
 	function buildDots() {
-		console.log("given",data)
 		d3.select("g") 
 		.selectAll("circle")
 		.data(data).enter()

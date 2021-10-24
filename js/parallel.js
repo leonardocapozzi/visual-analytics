@@ -1,4 +1,6 @@
 import { dataSetFactory } from "./dataset/dataset.js";
+import { BubbleMapBuilder } from "./map.js";
+import { PCAScatterPlotBuilder } from "./pca/pca-script.js";
 
 //////////DISEGNO PARALLEL////////////
 var parallelBuilder = (function() {
@@ -23,27 +25,17 @@ var parallelBuilder = (function() {
   function buildDataMapForPCAAlgorithm(data) {
     var map = new Map();
 
-    _.map(_.where(data), function(acc) {
-       
-        var x = {Severity:parseFloat( acc["Severity"]),
-         Precipitation: parseFloat(acc["Precipitation"]),
-         Pressure: parseFloat( acc["Pressure"]),
-         Visibility:parseFloat( acc["Visibility"]),
-         Humidity: parseFloat (acc["Humidity"]),
-         Wind_speed: parseFloat(acc["Wind_Speed"]),
-         Temperature: parseFloat( acc["Temperature"]),
-         Sunrise_Sunset: acc["Sunrise_Sunset"]};
-        
+    _.map(_.where(data), function(acc) {       
          
-        if (!isNaN(x.Severity) &&
-            !isNaN(x.Precipitation )&&
-            !isNaN(x.Pressure) &&
-            !isNaN(x.Visibility) &&
-            !isNaN(x.Humidity) &&
-            !isNaN(x.Wind_speed) &&
-            !isNaN(x.Temperature) &&
-            x.Sunrise_Sunset !== ""){
-                map.set(acc["ID"], x); 
+        if (!isNaN(parseFloat( acc["Severity"])) &&
+            !isNaN(parseFloat(acc["Precipitation"]))&&
+            !isNaN(parseFloat( acc["Pressure"])) &&
+            !isNaN(parseFloat( acc["Visibility"])) &&
+            !isNaN(parseFloat (acc["Humidity"])) &&
+            !isNaN(parseFloat(acc["Wind_Speed"])) &&
+            !isNaN(parseFloat( acc["Temperature"])) &&
+            acc.Sunrise_Sunset !== ""){
+                map.set(acc["ID"], acc); 
             }
     });
 
@@ -54,7 +46,8 @@ var parallelBuilder = (function() {
 
   function drawParallel(dataset) {
 
-    var data = Array.from(buildDataMapForPCAAlgorithm(dataset).values());
+    var map = buildDataMapForPCAAlgorithm(dataset);
+    var data = Array.from(map.values());
   
     var line = d3.line(),
         background,
@@ -70,8 +63,10 @@ var parallelBuilder = (function() {
       y = {},
       dragging = {};
 
+    var property = ['Severity', 'Precipitation', 'Pressure', 'Visibility', 'Humidity', 'Wind_Speed', 'Temperature'];
+
     x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
-      if ((d == "X") || (d == "Y")) {
+      if (!property.includes(d)) {
           return false;
       }
       return y[d] = d3.scaleLinear()
@@ -79,9 +74,9 @@ var parallelBuilder = (function() {
               return +p[d]; }))
           .range([300, 0]);
     }));
+
     //dimensions.pop(); //levo quell'id automatico che si mette nel parallel, in pratica quella colonna in più che si forma
     var colonnaColore= dimensions.pop(); //e levo anche la colonna sunset_sunrise che mi serve per i colori
-    //console.log(colonnaColore);
     
     extents = dimensions.map(function(p) { return [0,0]; });
   
@@ -157,7 +152,11 @@ var parallelBuilder = (function() {
     g.append("g")
         .attr("class", "brush")
         .each(function(d) {
-          d3.select(this).call(y[d].brush = d3.brushY().extent([[-8, 0], [8,290]]).on("brush start", brushstart).on("brush", brush_parallel_chart));
+          d3.select(this).call(y[d].brush = 
+            d3.brushY().extent([[-8, 0], [8,290]])
+              .on("brush start", brushstart)
+              .on("brush", brush_parallel_chart)
+              .on("end", brush_end));
         })
       .selectAll("rect")
         .attr("x", -8)
@@ -182,6 +181,31 @@ var parallelBuilder = (function() {
     d3.event.sourceEvent.stopPropagation();
   }
 
+  function clone(object) {
+    return JSON.parse(JSON.stringify(object));
+}
+
+  var lineSelected = [];
+
+  function removeElementFromArray(array, elem) {
+    const index = array.indexOf(elem);
+    if (index > -1) {
+      array.splice(index, 1);
+    }
+  }
+
+  function brush_end() {
+
+    var selection = d3.event.selection;
+
+    if(selection == null) {
+      PCAScatterPlotBuilder.redraw(data);
+      BubbleMapBuilder.redraw(data);
+      drawParallel(data);
+    }
+
+  }
+
   // Handles a brush event, toggling the display of foreground lines.
   function brush_parallel_chart() {    
     for(var i=0;i<dimensions.length;++i){
@@ -190,14 +214,46 @@ var parallelBuilder = (function() {
 
         }
     }
+
+    var cloneLineSelected = clone(lineSelected);
   
     foreground.style("display", function(d) {
-      return dimensions.every(function(p, i) {
-          if(extents[i][0]==0 && extents[i][0]==0) {
-              return true;
-          }
+      var ret = dimensions.every(function(p, i) {
+        if(extents[i][0]==0 && extents[i][0]==0) {
+            return true;
+        }
         return extents[i][1] <= d[p] && d[p] <= extents[i][0];
       }) ? null : "none";
+
+      if(ret == null) {
+        var flag = false;
+        for(var i = 0; i < cloneLineSelected.length; i++) {
+          if(cloneLineSelected[i].ID == d.ID) {
+            flag = true;
+          }
+        }
+
+        if(!flag) {
+          cloneLineSelected.push(d);
+        }
+      }
+      else {
+        for(var i = 0; i < cloneLineSelected.length; i ++) {
+          if(cloneLineSelected[i].ID == d.ID) {
+            cloneLineSelected.splice(i, 1);
+          }
+        }
+      }
+
+      if(lineSelected !== cloneLineSelected) {
+        PCAScatterPlotBuilder.redraw(lineSelected);
+        BubbleMapBuilder.redraw(lineSelected);
+        lineSelected = cloneLineSelected;
+      }
+
+      lineSelected = cloneLineSelected;
+
+      return ret;
     });
   }
 }
