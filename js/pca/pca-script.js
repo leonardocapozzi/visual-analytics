@@ -127,7 +127,7 @@ var PCAScatterPlotBuilder = (function() {
         var dataSelection=[]
         
         var selection= d3.event.selection;
-        
+     
         if (selection != null) {
             context.selectAll("circle")
                 .style("fill", function(d){
@@ -217,7 +217,7 @@ var PCAScatterPlotBuilder = (function() {
     }
 
     function removeDots() {
-        d3.selectAll('circle').remove();
+        context.selectAll('circle').remove();
     }
 
     function draw() {

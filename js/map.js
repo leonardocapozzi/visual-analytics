@@ -1,4 +1,6 @@
 import { dataSetFactory } from "./dataset/dataset.js";
+import { PCAScatterPlotBuilder } from "./pca/pca-script.js";
+import { parallelBuilder } from "./parallel.js";
 
 var width = 500,
 height = 720;
@@ -167,10 +169,6 @@ const legend = d3.select("svg").append('g').attr('class', 'legend')
 
 legend.append("rect").attr("x", 30).attr("y", 178) 
     .attr("width", 18).attr("height", 18).style("fill", colorScale)
-	//.on("click", selectSeverity)
-	//.attr("stroke", "black") //per iniziare con colori già selezionati
-	//.attr("stroke-width", 2)
-	//.attr("selected",true);
 	
 legend.append("text").attr("x", 60).attr("y", 188)
     .attr("dy", ".35em").text(function(d) { return d});
@@ -194,7 +192,7 @@ const row_right = d3.select("svg").append("line")
 	.style('stroke','black').style('stroke-width',2)	
 
 /*---------------------------------COMPUTE MEAN TIME--------------------------*/
-var selectedBubble = [];
+
 
 const show_time = d3.select("body").select('#map').append("rect")
 	.attr('id',"recLegendMap").attr("x",360).attr("y",590) 
@@ -215,7 +213,6 @@ const label4 = d3.select("svg").append('g')
 var BubbleMapBuilder = (function() {
 
 	var data = dataSetFactory.getInstance().data;
-	//console.log("data", data)
 
 	//Create a tooltip, hidden at the start
 	var tooltip = d3.select("#mapId")
@@ -225,7 +222,6 @@ var BubbleMapBuilder = (function() {
 	//Create a tooltip, hidden at the start
 	function showTooltip(d) {
 		var date = new Date(d.Start_Time)
-		//var time = date.getTimezoneOffset();
 		var year = date.getFullYear().toString(); 
 		var time1 = date.getTime()
 		var hour = msToTime(time1)
@@ -260,10 +256,10 @@ var BubbleMapBuilder = (function() {
 		.attr("stroke-width", 0.1)
 	}
 
-
-
+	var selectedBubble = [];
 	//color the selected bubble
 	function selectBubble(d){
+		
 		if (d3.select(this).attr("selected") === "true"){
 			d3.select(this)
 			.style("fill", function(d){ if (d.Severity == 1.0) return '#fecc5c'; else if(d.Severity == 2.0) return '#fd8d3c'; 
@@ -271,11 +267,14 @@ var BubbleMapBuilder = (function() {
 			.style("opacity", 0.5)
 			.attr("stroke", "black")
 			.attr("stroke-width", 0.1)
-				.attr("selected",false)
-				if(selectedBubble.includes(d.ID)){
-					selectedBubble = selectedBubble.filter(b => b !== d.ID)
-				}
-				console.log(d3.select(this).attr("selected"), selectedBubble)	
+			.attr("selected",false)
+		
+			selectedBubble.filter(b => b !== d)
+			
+			PCAScatterPlotBuilder.redraw(data);
+			parallelBuilder.redraw(data);	
+			console.log(d3.select(this).attr("selected"), selectedBubble)	
+
 		}
 		else{
 			d3.select(this)
@@ -284,10 +283,10 @@ var BubbleMapBuilder = (function() {
 				.attr("stroke-width", 0.4)
 				.style("opacity", 0.8)
 				.attr("selected",true)
-				selectedBubble.push(d.ID)
-			
-			
-				console.log(d3.select(this).attr("selected"), selectedBubble)		
+			selectedBubble.push(d)
+			PCAScatterPlotBuilder.redraw(selectedBubble);
+			parallelBuilder.redraw(selectedBubble);
+			console.log(d3.select(this).attr("selected"), selectedBubble)		
 		}
 	}
 	
