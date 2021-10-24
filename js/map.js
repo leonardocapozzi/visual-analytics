@@ -269,10 +269,16 @@ var BubbleMapBuilder = (function() {
 			.attr("stroke-width", 0.1)
 			.attr("selected",false)
 		
-			selectedBubble.filter(b => b !== d)
+			if(selectedBubble.length >= 0){
+				selectedBubble = selectedBubble.filter(b => b !== d)
+				PCAScatterPlotBuilder.redraw(selectedBubble);
+				parallelBuilder.redraw(selectedBubble);	
+			}
+			else{
+				PCAScatterPlotBuilder.redraw(data);
+				parallelBuilder.redraw(data);	
+			}
 			
-			PCAScatterPlotBuilder.redraw(data);
-			parallelBuilder.redraw(data);	
 			console.log(d3.select(this).attr("selected"), selectedBubble)	
 
 		}
