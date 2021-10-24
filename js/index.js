@@ -2,12 +2,7 @@ import { dataSetFilter } from "./dataset/dataset-filter.js";
 import { dataSetFactory } from "./dataset/dataset.js";
 import { PCAScatterPlotBuilder } from "./pca/pca-script.js";
 import { BubbleMapBuilder } from "./map.js";
-import { ParallelBuilder } from "./parallel.js"
-
-
-//document.writeln("<script type='text/javascript' src='parallel.js'></script>");
-
-
+import { parallelBuilder } from "./parallel.js"
 
 var computeFilter = (function() {
     function computeSeasonFilter(data) {
@@ -102,7 +97,7 @@ document.getElementById("filter-container").addEventListener('change', function(
 
     PCAScatterPlotBuilder.redraw(data);
     BubbleMapBuilder.redraw(data);
-   // ParallelBuilder.redraw(data);
+    parallelBuilder.redraw(data);
     
 });
 
