@@ -27,6 +27,12 @@ var PCAScatterPlotBuilder = (function() {
     var xAxis = d3.axisBottom(x),
         yAxis = d3.axisLeft(y);
 
+    var brush=d3.brush()
+        .extent([[0,0],
+            [svgClientSize.width-(padding.right * 4), svgClientSize.height-(padding.right * 2)]])
+        .on("brush", selected)
+        .on("end", reset);
+
     var dots;
 
     //Append clipPath to svg
@@ -35,6 +41,10 @@ var PCAScatterPlotBuilder = (function() {
         .append("rect")
         .attr("width", w + '%')
         .attr("height", h + '%');
+
+    var context = svg.append("g")
+        .attr("class", "context")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     //Appen focus to svg
     var focus = svg.append("g")
@@ -57,7 +67,7 @@ var PCAScatterPlotBuilder = (function() {
         //Get color scale
         var colorScale = d3.scale.category20();
 
-        dots = focus.append("g");
+        dots = context.append("g");
     
         dots.selectAll("circle")
             .data(data)
@@ -68,7 +78,7 @@ var PCAScatterPlotBuilder = (function() {
             .attr('stroke','black')
             .attr('stroke-width',0.2)
             .attr('fill',function (d,i) { return '#74C67A'})
-            .style("opacity", 0.7)
+            .style("opacity", 0.5)
             .on('mouseover', function () {
                 d3.select(this)
                 .transition()
@@ -87,14 +97,64 @@ var PCAScatterPlotBuilder = (function() {
             .text(function (d) { return '\id: ' + d['ID'] });
     }
 
+    function buildBrush() {
+        context.append("g")
+            .attr("class", "brush")
+            .call(brush);
+    }
+
+    function resetCircleProperty() {
+        context.selectAll("circle")
+            .style("fill",function(d) {return '#74C67A'})
+            .style("opacity","0.5")
+    }
+
+    function reset() {
+
+        var selection= d3.event.selection;
+
+        if(selection == null) {
+            resetCircleProperty();
+        }
+    }
+  
+    function selected(){
+        var dataSelection=[]
+        
+        var selection= d3.event.selection;
+        
+        if (selection != null) {
+            context.selectAll("circle")
+                .style("fill", function(d){
+                    if ((x(d['X']) > selection[0][0]) && (x(d['X']) < selection[1][0]) && 
+                        (y(d['Y']) > selection[0][1]) && (y(d['Y']) < selection[1][1])) {
+                        return "red"
+                    }
+                    return "#74C67A"})
+                .style("opacity",function(d){
+                    if ((x(d['X']) > selection[0][0]) && (x(d['X']) < selection[1][0]) && 
+                        (y(d['Y']) > selection[0][1]) && (y(d['Y']) < selection[1][1])) {
+                        dataSelection.push(d.ID)
+                        return "0.7"
+                    }
+                    return "0.2"});     
+                
+            console.log("Data selection: ", dataSelection);
+        }
+        else
+        {
+            resetCircleProperty()
+        }
+    }
+
     function buildAxes() {
-        focus.append("g")
+        context.append("g")
             .attr("id", "xAxis")
             .attr("class", "axis axis--x")
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis);
 
-        focus.append("g")
+        context.append("g")
             .attr("id", "yAxis")
             .attr("class", "axis axis--y")
             .call(yAxis);
@@ -109,7 +169,7 @@ var PCAScatterPlotBuilder = (function() {
     }
 
     function appendTextOnYAxis(text) {
-        focus.append("text")
+        context.append("text")
             .attr("transform", "rotate(-90)")
             .attr("y", 0 - margin.left)
             .attr("x", 0 - (svgClientSize.height / 2) + margin.bottom)
@@ -169,6 +229,9 @@ var PCAScatterPlotBuilder = (function() {
         //Append text on axes
         appendTextOnXAxis('PC1');
         appendTextOnYAxis('PC2');
+
+        //Build brush
+        buildBrush();
     }
 
     function redraw(newData) {
