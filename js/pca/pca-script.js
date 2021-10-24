@@ -1,4 +1,6 @@
 import { dataSetFactory } from "../dataset/dataset.js";
+import { parallelBuilder } from "../parallel.js";
+import { BubbleMapBuilder } from "../map.js";
 
 var PCAScatterPlotBuilder = (function() {
 
@@ -115,6 +117,9 @@ var PCAScatterPlotBuilder = (function() {
 
         if(selection == null) {
             resetCircleProperty();
+
+            BubbleMapBuilder.redraw(data);
+            parallelBuilder.redraw(data);
         }
     }
   
@@ -134,12 +139,13 @@ var PCAScatterPlotBuilder = (function() {
                 .style("opacity",function(d){
                     if ((x(d['X']) > selection[0][0]) && (x(d['X']) < selection[1][0]) && 
                         (y(d['Y']) > selection[0][1]) && (y(d['Y']) < selection[1][1])) {
-                        dataSelection.push(d.ID)
+                        dataSelection.push(d)
                         return "0.7"
                     }
-                    return "0.2"});     
-                
-            console.log("Data selection: ", dataSelection);
+                    return "0.2"});
+
+            BubbleMapBuilder.redraw(dataSelection);
+            parallelBuilder.redraw(dataSelection);
         }
         else
         {
