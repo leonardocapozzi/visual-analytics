@@ -21,6 +21,7 @@ var projection = d3.geo.albers()
 	
 // load geojson 
 window.onload = d3.json("resources/manhattan.geojson", function(error, dataGeojson){
+	
 
 	// create a path generator
 	var path = d3.geo.path()
@@ -206,7 +207,9 @@ const label4 = d3.select("svg").append('g')
 	.append("text").text("TIME")
 	.attr("x", 410).attr("y", 635) .style('position', 'fixed')	
 
-
+	
+	d3.select("body").select('#map').append("text").attr("x", 402).attr("y", 660)
+	.attr("dy", ".35em").text("")
 /*----------------------------------BUBBLE----------------------------------------*/
 
 var BubbleMapBuilder = (function() {
@@ -256,6 +259,8 @@ var BubbleMapBuilder = (function() {
 	}
 
 	var selectedBubble = [];
+	var meanTime;
+
 	//color the selected bubble
 	function selectBubble(d){
 		
@@ -271,12 +276,14 @@ var BubbleMapBuilder = (function() {
 			if(selectedBubble.length >= 0){
 				selectedBubble = selectedBubble.filter(b => b !== d)
 				PCAScatterPlotBuilder.redraw(selectedBubble);
-				parallelBuilder.redraw(selectedBubble);	
+				parallelBuilder.redraw(selectedBubble)
+				
 			}
 			else{
 				PCAScatterPlotBuilder.redraw(data);
 				parallelBuilder.redraw(data);	
-			}	
+			}
+			
 
 		}
 		else{
@@ -287,12 +294,59 @@ var BubbleMapBuilder = (function() {
 				.style("opacity", 0.8)
 				.attr("selected",true)
 			selectedBubble.push(d)
-			PCAScatterPlotBuilder.redraw(selectedBubble);
-			parallelBuilder.redraw(selectedBubble);
+			
+			PCAScatterPlotBuilder.redraw(selectedBubble)
+			parallelBuilder.redraw(selectedBubble)
+	
 		}
+		computeMean();
+	}
+
+	function computeMean() {
+		var times = [];
+		if(selectedBubble.length > 0){
+			for(var i = 0; i < selectedBubble.length; i++){
+				var date = new Date(selectedBubble[i].Start_Time)
+				var time = date.getTime()	
+				times.push(time)		
+			}
+			
+		}
+		else{
+			for(var i = 0; i < data.length; i++){
+				var date = new Date(data[i].Start_Time)
+				var time = date.getTime()	
+				times.push(time)		
+			}
+	
+		}
+		var i = 0, sum = 0, len = times.length;
+		while (i < len) {
+			sum = sum + times[i++];
+	}
+		var mean = sum / len
+		meanTime = msToTime(mean)
+		
+		d3.select("body").select('#map').select("text").attr("x", 402).attr("y", 660)
+			.attr("dy", ".35em").text(meanTime).style("fill", "black")
+	}
+
+	function msToTime(duration) {
+
+		var seconds = Math.floor((duration / 1000) % 60),
+		minutes = Math.floor((duration / (1000 * 60)) % 60),
+		hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+	  
+		hours = (hours < 10) ? "0" + hours : hours;
+		minutes = (minutes < 10) ? "0" + minutes : minutes;
+		seconds = (seconds < 10) ? "0" + seconds : seconds;
+	  
+		return hours + ":" + minutes + ":" + seconds;
 	}
 	
+	
 	function buildDots() {
+	
 		d3.select("g") 
 		.selectAll("circle")
 		.data(data).enter()
@@ -311,6 +365,7 @@ var BubbleMapBuilder = (function() {
 		.on( "mousemove", moveTooltip)
 		.on( "click" , selectBubble )
 		.call(zoom)	
+
 	}  
 
 	function removeDots() {
@@ -320,6 +375,7 @@ var BubbleMapBuilder = (function() {
 
 	function draw(){
 		buildDots();
+		computeMean();
 	}
 
 	function redraw(newData) {
@@ -327,6 +383,7 @@ var BubbleMapBuilder = (function() {
 
         removeDots();
         buildDots();
+		computeMean();
     }
 	return {
         draw: draw,
@@ -337,18 +394,6 @@ var BubbleMapBuilder = (function() {
 
 
 /*-------------------TIME-------------------------*/
-function msToTime(duration) {
-
-	var seconds = Math.floor((duration / 1000) % 60),
-	minutes = Math.floor((duration / (1000 * 60)) % 60),
-	hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
-  
-	hours = (hours < 10) ? "0" + hours : hours;
-	minutes = (minutes < 10) ? "0" + minutes : minutes;
-	seconds = (seconds < 10) ? "0" + seconds : seconds;
-  
-	return hours + ":" + minutes + ":" + seconds;
-}
 
 function computeSeason(day, month){
 	if(month == 3 && day >=21 || month == 4 || month == 5 || month == 6 && day <= 21 ) return "Spring";
@@ -356,6 +401,7 @@ function computeSeason(day, month){
 	else if(month == 9 && day >=23 || month == 10 || month == 11 || month == 12 && day <= 21 ) return "Autumn";
 	else return "Winter";
 }
+
 
 
 export { BubbleMapBuilder }

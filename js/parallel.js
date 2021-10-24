@@ -99,6 +99,7 @@ var parallelBuilder = (function() {
         .attr("d", path)
         .attr("class", function (d) { return "line " + d.Sunrise_Sunset } ) // 2 class for each line: 'line' and the group name
         .style("stroke", function(d){ return( coloriamo(d.Sunrise_Sunset))} )
+        .style("stroke-width", 1.2)
         .on("mouseover", function(){
           d3.select(this).raise().classed("active", true);
           d3.select(this).style("stroke", "#d7191c")})
