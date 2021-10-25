@@ -204,12 +204,24 @@ const label3 = d3.select("svg").append('g')
 	.attr("x", 364).attr("y", 615) .style('position', 'fixed')
 
 const label4 = d3.select("svg").append('g')
-	.append("text").text("TIME")
-	.attr("x", 410).attr("y", 635) .style('position', 'fixed')	
+	.append("text").text("Time: ").attr("dy", ".35em")
+	.attr("x", 370).attr("y", 635) .style('position', 'fixed')	
 
-	
-	d3.select("body").select('#map').append("text").attr("x", 402).attr("y", 660)
-	.attr("dy", ".35em").text("")
+
+const label5 = d3.select("svg").append('g')
+	.append("text").text("Duration: ").attr("dy", ".35em")
+	.attr("x", 370).attr("y", 655) .style('position', 'fixed')
+
+const label6 = d3.select("svg").append('g')
+	.append("text").text("Severity: ").attr("dy", ".35em")
+	.attr("x", 370).attr("y", 675) .style('position', 'fixed')	
+
+var mTime =	d3.select("body").select('#map').append("text")
+
+var mDuration =	d3.select("body").select('#map').append("text")
+		
+var mSeverity =	d3.select("body").select('#map').append("text")
+
 /*----------------------------------BUBBLE----------------------------------------*/
 
 var BubbleMapBuilder = (function() {
@@ -259,7 +271,7 @@ var BubbleMapBuilder = (function() {
 	}
 
 	var selectedBubble = [];
-	var meanTime;
+	var meanTime, meanDuration, meanSeverity;
 
 	//color the selected bubble
 	function selectBubble(d){
@@ -302,13 +314,22 @@ var BubbleMapBuilder = (function() {
 		computeMean();
 	}
 
+	
 	function computeMean() {
 		var times = [];
+		var durations = [];
+		var severities = [];
 		if(selectedBubble.length > 0){
 			for(var i = 0; i < selectedBubble.length; i++){
 				var date = new Date(selectedBubble[i].Start_Time)
 				var time = date.getTime()	
-				times.push(time)		
+				times.push(time)
+				var date2 = new Date(selectedBubble[i].End_Time)
+				var time2 = date2.getTime()
+				var duration = time2-time	
+				durations.push(duration)
+				var severity = parseFloat(selectedBubble[i].Severity)
+				severities.push(severity)	
 			}
 			
 		}
@@ -316,21 +337,45 @@ var BubbleMapBuilder = (function() {
 			for(var i = 0; i < data.length; i++){
 				var date = new Date(data[i].Start_Time)
 				var time = date.getTime()	
-				times.push(time)		
+				times.push(time)
+				var date2 = new Date(data[i].End_Time)
+				var time2 = date2.getTime()
+				var duration = time2-time	
+				durations.push(duration)
+				var severity = parseFloat(data[i].Severity)
+				severities.push(severity)			
 			}
 	
 		}
-		var i = 0, sum = 0, len = times.length;
-		while (i < len) {
-			sum = sum + times[i++];
-	}
-		var mean = sum / len
-		meanTime = msToTime(mean)
 		
-		d3.select("body").select('#map').select("text").attr("x", 402).attr("y", 660)
-			.attr("dy", ".35em").text(meanTime).style("fill", "black")
+		var i = 0, j = 0, k = 0, 
+		sumTime = 0, sumDuration = 0, sumSeverity = 0,
+		lenT = times.length, lenD = durations.length, lenS = severities.length;
+		
+		while (i < lenT) {
+			sumTime = sumTime + times[i++]
+		}
+		while(j < lenD){
+			sumDuration = sumDuration + durations[j++]
+		}
+		while(k < lenS){
+			sumSeverity = sumSeverity + severities[k++]
+		}
+		
+		var meanT = sumTime / lenT
+		meanTime = msToTime(meanT)
+		mTime.attr("x", 425).attr("y", 635).attr("dy", ".35em").text(meanTime)
+
+		var meanD = sumDuration / lenD
+		meanDuration = msToTime(meanD)
+		mDuration.attr("x", 435).attr("y", 655).attr("dy", ".35em").text(meanDuration)
+
+		meanSeverity = (sumSeverity / lenS).toFixed(2)
+		mSeverity.attr("x", 435).attr("y", 675).attr("dy", ".35em").text(meanSeverity)
+		
 	}
 
+	
 	function msToTime(duration) {
 
 		var seconds = Math.floor((duration / 1000) % 60),
