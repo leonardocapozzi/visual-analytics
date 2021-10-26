@@ -188,13 +188,6 @@ var parallelBuilder = (function() {
 
   var lineSelected = [];
 
-  function removeElementFromArray(array, elem) {
-    const index = array.indexOf(elem);
-    if (index > -1) {
-      array.splice(index, 1);
-    }
-  }
-
   function brush_end() {
 
     var selection = d3.event.selection;
@@ -204,7 +197,10 @@ var parallelBuilder = (function() {
       BubbleMapBuilder.redraw(data);
       drawParallel(data);
     }
-
+    /* (1-PCA-REALTIME-HIGHLIGHT) comment 'else' condition to highlight in real time the PCA dots */
+    else {
+      PCAScatterPlotBuilder.highlight(lineSelected);
+    }
   }
 
   // Handles a brush event, toggling the display of foreground lines.
@@ -247,8 +243,11 @@ var parallelBuilder = (function() {
       }
 
       if(lineSelected !== cloneLineSelected) {
-        PCAScatterPlotBuilder.redraw(lineSelected);
         BubbleMapBuilder.redraw(lineSelected);
+        
+        /* (2-PCA-REALTIME-HIGHLIGHT) uncomment to highlight in real time the PCA dots */
+        //PCAScatterPlotBuilder.highlight(lineSelected);
+        
         lineSelected = cloneLineSelected;
       }
 

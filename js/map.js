@@ -287,7 +287,7 @@ var BubbleMapBuilder = (function() {
 		
 			if(selectedBubble.length >= 0){
 				selectedBubble = selectedBubble.filter(b => b !== d)
-				PCAScatterPlotBuilder.redraw(selectedBubble);
+				PCAScatterPlotBuilder.highlight(selectedBubble);
 				parallelBuilder.redraw(selectedBubble)
 				
 			}
@@ -295,8 +295,6 @@ var BubbleMapBuilder = (function() {
 				PCAScatterPlotBuilder.redraw(data);
 				parallelBuilder.redraw(data);	
 			}
-			
-
 		}
 		else{
 			d3.select(this)
@@ -307,7 +305,7 @@ var BubbleMapBuilder = (function() {
 				.attr("selected",true)
 			selectedBubble.push(d)
 			
-			PCAScatterPlotBuilder.redraw(selectedBubble)
+			PCAScatterPlotBuilder.highlight(selectedBubble)
 			parallelBuilder.redraw(selectedBubble)
 	
 		}

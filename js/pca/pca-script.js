@@ -1,6 +1,7 @@
 import { dataSetFactory } from "../dataset/dataset.js";
 import { parallelBuilder } from "../parallel.js";
 import { BubbleMapBuilder } from "../map.js";
+import { UtilsModule } from "../utils/utils.js";
 
 var PCAScatterPlotBuilder = (function() {
 
@@ -253,10 +254,25 @@ var PCAScatterPlotBuilder = (function() {
         buildDots();
     }
 
+    function highlight(data) {
+        var mapData = UtilsModule.buildMapFromArray(data);
+
+        context
+            .selectAll('circle')
+            .attr('fill',function (d) {
+                if(mapData.get(d.ID) !== undefined) {
+                    return "red";
+                }
+
+                return '#74C67A';
+            });
+    }
+
     return {
         draw: draw,
         redraw: redraw,
-        resize: resize
+        resize: resize,
+        highlight: highlight
     };
 })();
 
