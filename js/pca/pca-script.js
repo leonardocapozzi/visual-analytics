@@ -38,6 +38,8 @@ var PCAScatterPlotBuilder = (function() {
 
     var dots;
 
+    var dataSelection = [];
+
     //Append clipPath to svg
     svg.append("defs").append("clipPath")
         .attr("id", "clip")
@@ -122,11 +124,14 @@ var PCAScatterPlotBuilder = (function() {
             BubbleMapBuilder.redraw(data);
             parallelBuilder.redraw(data);
         }
+        else {
+            parallelBuilder.highlight(dataSelection);
+        }
     }
   
     function selected(){
-        var dataSelection=[]
-        
+        dataSelection = [];
+
         var selection= d3.event.selection;
      
         if (selection != null) {
@@ -146,7 +151,7 @@ var PCAScatterPlotBuilder = (function() {
                     return "0.2"});
 
             BubbleMapBuilder.redraw(dataSelection);
-            parallelBuilder.redraw(dataSelection);
+            //parallelBuilder.highlight(dataSelection);
         }
         else
         {

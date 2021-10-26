@@ -1,6 +1,7 @@
 import { dataSetFactory } from "./dataset/dataset.js";
 import { BubbleMapBuilder } from "./map.js";
 import { PCAScatterPlotBuilder } from "./pca/pca-script.js";
+import { UtilsModule } from "./utils/utils.js";
 
 //////////DISEGNO PARALLEL////////////
 var parallelBuilder = (function() {
@@ -42,7 +43,7 @@ var parallelBuilder = (function() {
     return map;
   }
 
-  var dim;
+  var foregroundGlobal;
 
   function drawParallel(dataset) {
 
@@ -106,6 +107,8 @@ var parallelBuilder = (function() {
         .on("mouseout", function(d){
             d3.select(this).style("stroke", function(d){ return( coloriamo(d.Sunrise_Sunset))} )});
 
+    foregroundGlobal = foreground;
+
    // Add a group element for each dimension.
     var g = svg.selectAll("dimension")
         .data(dimensions)
@@ -136,8 +139,6 @@ var parallelBuilder = (function() {
                 .duration(0)
                 .attr("visibility", null);
           }));
-    
-    dim = g;
 
     // Add an axis and title.
     g.append("g")
@@ -283,9 +284,22 @@ var parallelBuilder = (function() {
     drawParallel(newData);
   }
 
+  function highlight(data) {
+
+    var mapData = UtilsModule.buildMapFromArray(data);
+
+    foregroundGlobal.style("stroke", function(d) {
+        return mapData.get(d.ID) !== undefined ? "red" : coloriamo(d.Sunrise_Sunset);
+      })
+      .style("stroke-width", function(d) {
+        return mapData.get(d.ID) !== undefined ? "1.8" : "1.2";
+      });
+  }
+
   return {
     draw: draw,
-    redraw: redraw
+    redraw: redraw,
+    highlight: highlight
   }
 
 })();

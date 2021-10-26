@@ -288,7 +288,7 @@ var BubbleMapBuilder = (function() {
 			if(selectedBubble.length >= 0){
 				selectedBubble = selectedBubble.filter(b => b !== d)
 				PCAScatterPlotBuilder.highlight(selectedBubble);
-				parallelBuilder.redraw(selectedBubble)
+				parallelBuilder.highlight(selectedBubble)
 				
 			}
 			else{
@@ -306,7 +306,7 @@ var BubbleMapBuilder = (function() {
 			selectedBubble.push(d)
 			
 			PCAScatterPlotBuilder.highlight(selectedBubble)
-			parallelBuilder.redraw(selectedBubble)
+			parallelBuilder.highlight(selectedBubble)
 	
 		}
 		computeMean();
