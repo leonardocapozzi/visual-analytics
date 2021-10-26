@@ -253,6 +253,8 @@ var BubbleMapBuilder = (function() {
 		.duration(250)
 		.attr('r',4)
 		.attr('stroke-width',0.5)
+
+		PCAScatterPlotBuilder.singleHighlight(d);
 	}
 
 	//Move the tooltip to track the mouse
@@ -262,12 +264,14 @@ var BubbleMapBuilder = (function() {
 	}
 
 	//Create a tooltip, hidden at the start
-	function hideTooltip() {
+	function hideTooltip(d) {
 		tooltip.style("display","none");
 		d3.select(this).transition()
 		.duration(400)
 		.attr("r", 2.5)
 		.attr("stroke-width", 0.1)
+
+		PCAScatterPlotBuilder.resetSingleHighlight(d);
 	}
 
 	var selectedBubble = [];

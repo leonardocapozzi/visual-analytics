@@ -101,11 +101,18 @@ var parallelBuilder = (function() {
         .attr("class", function (d) { return "line " + d.Sunrise_Sunset } ) // 2 class for each line: 'line' and the group name
         .style("stroke", function(d){ return( coloriamo(d.Sunrise_Sunset))} )
         .style("stroke-width", 1.2)
-        .on("mouseover", function(){
+        .on("mouseover", function(d){
           d3.select(this).raise().classed("active", true);
-          d3.select(this).style("stroke", "#d7191c")})
+          d3.select(this).style("stroke", "#d7191c");
+
+          PCAScatterPlotBuilder.singleHighlight(d);
+        })
         .on("mouseout", function(d){
-            d3.select(this).style("stroke", function(d){ return( coloriamo(d.Sunrise_Sunset))} )});
+            d3.select(this).style("stroke", function(d) { 
+              PCAScatterPlotBuilder.resetSingleHighlight(d);
+              return( coloriamo(d.Sunrise_Sunset))
+            } 
+            )});
 
     foregroundGlobal = foreground;
 

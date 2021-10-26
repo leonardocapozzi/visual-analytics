@@ -96,7 +96,7 @@ var PCAScatterPlotBuilder = (function() {
                 .transition()
                 .duration(400)
                 .attr('r',4)
-                .attr('stroke-width',0.1)
+                .attr('stroke-width',0.2)
             })
             .append('title')
             .text(function (d) { return '\id: ' + d['ID'] });
@@ -259,14 +259,64 @@ var PCAScatterPlotBuilder = (function() {
         buildDots();
     }
 
+    var shProperties = {
+        oldFill: undefined,
+        oldObj: undefined
+    };
+
+    function singleHighlight(elem) {
+
+        var circle = context
+            .selectAll('circle')
+            .filter(d => elem.ID == d.ID)
+
+        shProperties.oldObj = elem;
+        shProperties.oldFill = circle._groups[0][0].getAttribute("fill");
+
+        if(shProperties.oldFill == "red") {
+            circle.attr('fill', 'blue')
+        }
+        else {
+            circle.attr('fill', 'red')
+        }
+
+        circle
+            .attr('opacity', 0.7)
+            .attr('r', '10');
+    }
+
+    function resetSingleHighlight(elem) {
+
+        if(shProperties.oldFill == undefined) {
+            shProperties.oldFill = '#74C67A';
+        }   
+
+        context
+            .selectAll('circle')
+            .filter(d => elem.ID == d.ID)
+            .attr('fill', shProperties.oldFill)
+            .attr('opacity', 0.5)
+            .attr('r', '4');
+
+        shProperties.oldFill = undefined;
+    }
+
     function highlight(data) {
         var mapData = UtilsModule.buildMapFromArray(data);
+
+        if(shProperties.oldObj !== undefined && 
+            mapData.get(shProperties.oldObj.ID) !== undefined) {
+            shProperties.oldFill = 'red';
+        }
+        else {
+            shProperties.oldFill = '#74C67A';
+        }
 
         context
             .selectAll('circle')
             .attr('fill',function (d) {
                 if(mapData.get(d.ID) !== undefined) {
-                    return "red";
+                    return 'red';
                 }
 
                 return '#74C67A';
@@ -277,7 +327,9 @@ var PCAScatterPlotBuilder = (function() {
         draw: draw,
         redraw: redraw,
         resize: resize,
-        highlight: highlight
+        highlight: highlight,
+        singleHighlight: singleHighlight,
+        resetSingleHighlight: resetSingleHighlight
     };
 })();
 
