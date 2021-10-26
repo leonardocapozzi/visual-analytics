@@ -20,6 +20,26 @@ var dataSetFactory = (function(){
     
          return data
     }
+
+    function removeBadValue(data) {
+        var map = new Map();
+    
+        _.map(_.where(data), function(acc) {       
+             
+            if (!isNaN(parseFloat( acc["Severity"])) &&
+                !isNaN(parseFloat(acc["Precipitation"]))&&
+                !isNaN(parseFloat( acc["Pressure"])) &&
+                !isNaN(parseFloat( acc["Visibility"])) &&
+                !isNaN(parseFloat (acc["Humidity"])) &&
+                !isNaN(parseFloat(acc["Wind_Speed"])) &&
+                !isNaN(parseFloat( acc["Temperature"])) &&
+                acc.Sunrise_Sunset !== ""){
+                    map.set(acc["ID"], acc); 
+                }
+        });
+    
+        return map;
+      }
     
     
     function getObjectsFromCSV(csv, delimiter = ",") {
@@ -49,10 +69,11 @@ var dataSetFactory = (function(){
 			if (!instance) {
                 var csvFile = getDataSet();
                 var csvArray = getObjectsFromCSV(csvFile);
+                var data =  Array.from(removeBadValue(csvArray).values());
 
 				instance = {
                     csv: csvFile,
-                    data: csvArray
+                    data: data
                 };
 			}
 			return instance;
