@@ -10,7 +10,7 @@ var parallelBuilder = (function() {
   // Color scale: give me a specie name, I return a color
   var coloriamo = d3.scaleOrdinal()
     .domain(["Day", "Night" ])
-    .range([ "#f79256", "#315e26"]);
+    .range([ "#F79256", "#315E26"]);
 
   var margin = {top: 30, right: 10, bottom: 10, left: 10},
         width = 100,
@@ -291,9 +291,51 @@ var parallelBuilder = (function() {
     drawParallel(newData);
   }
 
+  var shProperties = {
+    oldFill: undefined,
+    oldObj: undefined
+  }
+
+  function singleHighlight(elem) {
+
+    var pathLine = foregroundGlobal
+        .filter(d => d.ID == elem.ID);
+
+    shProperties.oldObj = elem;
+    shProperties.oldFill = pathLine._groups[0][0].style.stroke;
+
+    if(shProperties.oldFill == "red") {
+      pathLine.style("stroke", "blue");
+    }
+    else {
+      pathLine.style("stroke", "red");
+    }
+  }
+
+  function resetSingleHighlight(elem) {
+
+    if(shProperties.oldFill == undefined) {
+      shProperties.oldFill = coloriamo(elem.Sunrise_Sunset);
+    }
+
+    foregroundGlobal
+        .filter(d => d.ID == elem.ID)
+        .style("stroke", shProperties.oldFill);
+
+    shProperties.oldFill = undefined;
+  }
+
   function highlight(data) {
 
     var mapData = UtilsModule.buildMapFromArray(data);
+
+    if(shProperties.oldObj !== undefined && 
+      mapData.get(shProperties.oldObj.ID) !== undefined) {
+      shProperties.oldFill = 'red';
+    }
+    else if(shProperties.oldObj !== undefined && mapData.get(shProperties.oldObj.ID) == undefined) {
+      shProperties.oldFill = coloriamo(shProperties.oldObj.Sunrise_Sunset);
+    }
 
     foregroundGlobal.style("stroke", function(d) {
         return mapData.get(d.ID) !== undefined ? "red" : coloriamo(d.Sunrise_Sunset);
@@ -306,7 +348,9 @@ var parallelBuilder = (function() {
   return {
     draw: draw,
     redraw: redraw,
-    highlight: highlight
+    highlight: highlight,
+    singleHighlight: singleHighlight,
+    resetSingleHighlight: resetSingleHighlight
   }
 
 })();

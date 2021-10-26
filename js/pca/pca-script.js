@@ -84,19 +84,23 @@ var PCAScatterPlotBuilder = (function() {
             .attr('stroke-width',0.2)
             .attr('fill',function (d,i) { return '#74C67A'})
             .style("opacity", 0.5)
-            .on('mouseover', function () {
+            .on('mouseover', function (d) {
                 d3.select(this)
                 .transition()
                 .duration(250)
                 .attr('r',10)
                 .attr('stroke-width',1.5)
+
+                parallelBuilder.singleHighlight(d);
             })
-            .on('mouseout', function () {
+            .on('mouseout', function (d) {
                 d3.select(this)
                 .transition()
                 .duration(400)
                 .attr('r',4)
                 .attr('stroke-width',0.2)
+
+                parallelBuilder.resetSingleHighlight(d);
             })
             .append('title')
             .text(function (d) { return '\id: ' + d['ID'] });

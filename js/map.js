@@ -255,6 +255,7 @@ var BubbleMapBuilder = (function() {
 		.attr('stroke-width',0.5)
 
 		PCAScatterPlotBuilder.singleHighlight(d);
+		parallelBuilder.singleHighlight(d);
 	}
 
 	//Move the tooltip to track the mouse
@@ -272,6 +273,7 @@ var BubbleMapBuilder = (function() {
 		.attr("stroke-width", 0.1)
 
 		PCAScatterPlotBuilder.resetSingleHighlight(d);
+		parallelBuilder.resetSingleHighlight(d);
 	}
 
 	var selectedBubble = [];
