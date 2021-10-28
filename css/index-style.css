@@ -16,7 +16,7 @@ body{
     left:0.1%;
     top:0.5%;
     bottom:1%;
-    background: lightblue;
+    background: rgb(179, 212, 223);
     border:3px solid black;
     border-right-style: outset;
     border-radius: 5px;

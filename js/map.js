@@ -1,9 +1,10 @@
 import { dataSetFactory } from "./dataset/dataset.js";
 import { PCAScatterPlotBuilder } from "./pca/pca-script.js";
 import { parallelBuilder } from "./parallel.js";
+import { UtilsModule } from "./utils/utils.js";
 
 var width = 500,
-height = 720;
+height = 730;
 
 var margin = { top: -5, right: -5, bottom: -5, left: -5 }
 
@@ -46,7 +47,6 @@ window.onload = d3.json("resources/manhattan.geojson", function(error, dataGeojs
 		.on( "mouseover", showTooltipBorough)
 		.on( "mouseout", hideTooltipBorough)
 		.on( "mousemove", moveTooltipBorough)
-		//.on("click", selectBorough)
 		.style("opacity", 0.5)
 		.attr("transform", "translate(" + margin.left + "," + margin.right + ")")
 		.call(zoom);
@@ -146,7 +146,8 @@ function slided(d) {
 
 const colorScale = d3.scaleLinear()
     .domain([1.0, 2.0, 3.0, 4.0]) //value for the legend
-    .range(['#fecc5c','#fd8d3c','#f03b20','#bd0026']);	
+    .range(['#fecc5c','#fd8d3c','#f03b20','#bd0026']);
+	//.range(['#bdd7e7', '#6baed6', '#3182bd', '#08519c']);	
 	
 const base_legend = d3.select("body").select('#map').append("rect")
 	.attr('id',"recLegendMap").attr("x",15).attr("y",130) 
@@ -195,26 +196,26 @@ const row_right = d3.select("svg").append("line")
 
 
 const show_time = d3.select("body").select('#map').append("rect")
-	.attr('id',"recLegendMap").attr("x",360).attr("y",590) 
+	.attr('id',"recLegendMap").attr("x",400).attr("y",680) 
 	.attr("width", 140 ).attr("height", 100 ).attr("rx","12")
 	.attr("class", "baseLegend").style('stroke','').style('position', 'fixed')
 
 const label3 = d3.select("svg").append('g')
 	.append("text").text("MEAN ACCIDENT")
-	.attr("x", 364).attr("y", 615) .style('position', 'fixed')
+	.attr("x", 404).attr("y", 705) .style('position', 'fixed')
 
 const label4 = d3.select("svg").append('g')
 	.append("text").text("Time: ").attr("dy", ".35em")
-	.attr("x", 370).attr("y", 635) .style('position', 'fixed')	
+	.attr("x", 410).attr("y", 725) .style('position', 'fixed')	
 
 
 const label5 = d3.select("svg").append('g')
 	.append("text").text("Duration: ").attr("dy", ".35em")
-	.attr("x", 370).attr("y", 655) .style('position', 'fixed')
+	.attr("x", 410).attr("y", 745) .style('position', 'fixed')
 
 const label6 = d3.select("svg").append('g')
 	.append("text").text("Severity: ").attr("dy", ".35em")
-	.attr("x", 370).attr("y", 675) .style('position', 'fixed')	
+	.attr("x", 410).attr("y", 765) .style('position', 'fixed')	
 
 var mTime =	d3.select("body").select('#map').append("text")
 
@@ -284,8 +285,7 @@ var BubbleMapBuilder = (function() {
 		
 		if (d3.select(this).attr("selected") === "true"){
 			d3.select(this)
-			.style("fill", function(d){ if (d.Severity == 1.0) return '#fecc5c'; else if(d.Severity == 2.0) return '#fd8d3c'; 
-			else if(d.Severity == 3.0) return '#f03b20'; else return '#bd0026';})
+			.style("fill", function(d){ return colorBubble(d.Severity) ;})
 			.style("opacity", 0.5)
 			.attr("stroke", "black")
 			.attr("stroke-width", 0.1)
@@ -304,7 +304,7 @@ var BubbleMapBuilder = (function() {
 		}
 		else{
 			d3.select(this)
-				.style("fill","#74c476")
+				.style("fill","#2fcc3a")
 				.attr("stroke", "white")
 				.attr("stroke-width", 0.4)
 				.style("opacity", 0.8)
@@ -315,24 +315,25 @@ var BubbleMapBuilder = (function() {
 			parallelBuilder.highlight(selectedBubble)
 	
 		}
-		computeMean();
+		computeMean(selectedBubble);
 	}
 
 	
-	function computeMean() {
+	function computeMean(selected) {
+		console.log("mean", selected)
 		var times = [];
 		var durations = [];
 		var severities = [];
-		if(selectedBubble.length > 0){
-			for(var i = 0; i < selectedBubble.length; i++){
-				var date = new Date(selectedBubble[i].Start_Time)
+		if(selected.length > 0){
+			for(var i = 0; i < selected.length; i++){
+				var date = new Date(selected[i].Start_Time)
 				var time = date.getTime()	
 				times.push(time)
-				var date2 = new Date(selectedBubble[i].End_Time)
+				var date2 = new Date(selected[i].End_Time)
 				var time2 = date2.getTime()
 				var duration = time2-time	
 				durations.push(duration)
-				var severity = parseFloat(selectedBubble[i].Severity)
+				var severity = parseFloat(selected[i].Severity)
 				severities.push(severity)	
 			}
 			
@@ -368,14 +369,14 @@ var BubbleMapBuilder = (function() {
 		
 		var meanT = sumTime / lenT
 		meanTime = msToTime(meanT)
-		mTime.attr("x", 425).attr("y", 635).attr("dy", ".35em").text(meanTime)
+		mTime.attr("x", 475).attr("y", 725).attr("dy", ".35em").text(meanTime)
 
 		var meanD = sumDuration / lenD
 		meanDuration = msToTime(meanD)
-		mDuration.attr("x", 435).attr("y", 655).attr("dy", ".35em").text(meanDuration)
+		mDuration.attr("x", 475).attr("y", 745).attr("dy", ".35em").text(meanDuration)
 
 		meanSeverity = (sumSeverity / lenS).toFixed(2)
-		mSeverity.attr("x", 435).attr("y", 675).attr("dy", ".35em").text(meanSeverity)
+		mSeverity.attr("x", 475).attr("y", 765).attr("dy", ".35em").text(meanSeverity)
 		
 	}
 
@@ -393,6 +394,12 @@ var BubbleMapBuilder = (function() {
 		return hours + ":" + minutes + ":" + seconds;
 	}
 	
+	function colorBubble(severity){
+		if (severity == 1.0) return '#FECC5C'; 
+		else if(severity == 2.0) return '#FD8D3C';
+		else if(severity == 3.0) return '#F03B20'; 
+		else return '#BD0026';
+	}
 	
 	function buildDots() {
 	
@@ -403,8 +410,7 @@ var BubbleMapBuilder = (function() {
 		.attr("cx", function(d){ return projection([d.Start_Lng, d.Start_Lat])[0] })
         .attr("cy", function(d){ return projection([d.Start_Lng, d.Start_Lat])[1] })
 		.attr("r", 2.5)
-		.style("fill", function(d){if (d.Severity == 1.0) return '#fecc5c'; else if(d.Severity == 2.0) return '#fd8d3c';
-		 	else if(d.Severity == 3.0) return '#f03b20'; else return '#bd0026';})
+		.style("fill", function(d){ return colorBubble(d.Severity); })
 		.style("opacity", 0.7)
 		.attr("stroke", "black")
 		.attr("stroke-width", 0.1)
@@ -424,7 +430,7 @@ var BubbleMapBuilder = (function() {
 
 	function draw(){
 		buildDots();
-		computeMean();
+		computeMean(data);
 	}
 
 	function redraw(newData) {
@@ -432,11 +438,109 @@ var BubbleMapBuilder = (function() {
 
         removeDots();
         buildDots();
-		computeMean();
+		computeMean(data);
     }
+
+	var shProperties = {
+        oldFill: undefined,
+        oldObj: undefined
+    }
+
+	function onPointerOver(elem){
+
+		var circle = d3.select("g") 
+			.selectAll("circle")
+			.filter(d => elem.ID == d.ID)
+        	.transition()
+			.duration(250)
+			.attr('r', 8)
+			.attr('stroke-width', 1.5)
+
+		shProperties.oldObj = elem;
+        shProperties.oldFill = circle.attr('fill')
+		console.log( shProperties.oldFill)
+
+        if(shProperties.oldFill == '#74C67A') {
+            circle.attr('fill', 'blue')
+        }
+        else {
+            circle.attr('fill', '#74C67A') //'#74C67A'
+        }
+
+	}
+
+	function onPointerOut(elem){
+
+		if(shProperties.oldFill == undefined) {
+            shProperties.oldFill = colorBubble(elem.Severity);
+        } 
+		d3.select("g") 
+			.selectAll("circle")
+			.filter(d => elem.ID == d.ID)
+			.attr('fill', shProperties.oldFill)
+        	.transition()
+			.duration(400)
+			.attr('r',2.5)
+			.attr('stroke-width', 0.1)
+
+		shProperties.oldFill = undefined;	
+		
+	}
+
+	function highlight(data){
+		console.log(data)
+
+		var mapData = UtilsModule.buildMapFromArray(data);
+		console.log(mapData)
+
+		if(shProperties.oldObj !== undefined && 
+			mapData.get(shProperties.oldObj.ID) !== undefined) {
+			console.log("qui")
+			shProperties.oldFill = '#74C67A'
+			console.log(shProperties.oldFill)
+		  }
+		  else if(shProperties.oldObj !== undefined && mapData.get(shProperties.oldObj.ID) == undefined) {
+			shProperties.oldFill = colorBubble(shProperties.oldObj.Severity)
+			console.log("ciao")
+		  }
+	  
+
+		
+		d3.select("g") 
+		.selectAll("circle")
+		.attr('fill',function (d) {
+			if(mapData.get(d.ID) !== undefined) {
+				console.log("holaaaa")
+				return '#74C67A';
+			}
+
+			return colorBubble(d.Severity);
+		});
+	
+			/*circle
+			.filter(function(d) {return d => newData.ID == d.ID}) 		
+			.style("fill","#2fcc3a")
+			.attr("stroke", "black")
+			.attr("stroke-width", 0.4)
+			.style("opacity", 0.8)
+			.transition()
+            .duration(400)
+        	.attr('r',6)
+			.transition()
+            .duration(400)
+        	.attr('r',3.5)*/
+		
+		//selectedBubble = data;	
+		computeMean(data);
+
+	}
+
 	return {
         draw: draw,
-        redraw: redraw
+        redraw: redraw,
+		highlight : highlight,
+		onPointerOver : onPointerOver,
+		onPointerOut : onPointerOut
     };
 
 })();

@@ -92,6 +92,7 @@ var PCAScatterPlotBuilder = (function() {
                 .attr('stroke-width',1.5)
 
                 parallelBuilder.singleHighlight(d);
+                BubbleMapBuilder.onPointerOver(d);
             })
             .on('mouseout', function (d) {
                 d3.select(this)
@@ -101,6 +102,7 @@ var PCAScatterPlotBuilder = (function() {
                 .attr('stroke-width',0.2)
 
                 parallelBuilder.resetSingleHighlight(d);
+                BubbleMapBuilder.onPointerOut(d);
             })
             .append('title')
             .text(function (d) { return '\id: ' + d['ID'] });
@@ -130,6 +132,7 @@ var PCAScatterPlotBuilder = (function() {
         }
         else {
             parallelBuilder.highlight(dataSelection);
+            BubbleMapBuilder.highlight(dataSelection);
         }
     }
   
@@ -154,7 +157,7 @@ var PCAScatterPlotBuilder = (function() {
                     }
                     return "0.2"});
 
-            BubbleMapBuilder.redraw(dataSelection);
+            //BubbleMapBuilder.redraw(dataSelection);
             //parallelBuilder.highlight(dataSelection);
         }
         else

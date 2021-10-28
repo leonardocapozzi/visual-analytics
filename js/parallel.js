@@ -106,10 +106,12 @@ var parallelBuilder = (function() {
           d3.select(this).style("stroke", "#d7191c");
 
           PCAScatterPlotBuilder.singleHighlight(d);
+          BubbleMapBuilder.onPointerOver(d);
         })
         .on("mouseout", function(d){
             d3.select(this).style("stroke", function(d) { 
               PCAScatterPlotBuilder.resetSingleHighlight(d);
+              BubbleMapBuilder.onPointerOut(d);
               return( coloriamo(d.Sunrise_Sunset))
             } 
             )});
@@ -208,6 +210,7 @@ var parallelBuilder = (function() {
     /* (1-PCA-REALTIME-HIGHLIGHT) comment 'else' condition to highlight in real time the PCA dots */
     else {
       PCAScatterPlotBuilder.highlight(lineSelected);
+      BubbleMapBuilder.highlight(lineSelected);
     }
   }
 
@@ -251,7 +254,7 @@ var parallelBuilder = (function() {
       }
 
       if(lineSelected !== cloneLineSelected) {
-        BubbleMapBuilder.redraw(lineSelected);
+        //BubbleMapBuilder.redraw(lineSelected);
         
         /* (2-PCA-REALTIME-HIGHLIGHT) uncomment to highlight in real time the PCA dots */
         //PCAScatterPlotBuilder.highlight(lineSelected);
