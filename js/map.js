@@ -295,11 +295,13 @@ var BubbleMapBuilder = (function() {
 				selectedBubble = selectedBubble.filter(b => b !== d)
 				PCAScatterPlotBuilder.highlight(selectedBubble);
 				parallelBuilder.highlight(selectedBubble)
+				highlight(selectedBubble)
 				
 			}
 			else{
-				PCAScatterPlotBuilder.redraw(data);
-				parallelBuilder.redraw(data);	
+				PCAScatterPlotBuilder.redraw(data)
+				parallelBuilder.redraw(data)
+				redraw(data)
 			}
 		}
 		else{
@@ -313,6 +315,7 @@ var BubbleMapBuilder = (function() {
 			
 			PCAScatterPlotBuilder.highlight(selectedBubble)
 			parallelBuilder.highlight(selectedBubble)
+			highlight(selectedBubble)
 	
 		}
 		computeMean(selectedBubble);
@@ -410,7 +413,7 @@ var BubbleMapBuilder = (function() {
 		.attr("cx", function(d){ return projection([d.Start_Lng, d.Start_Lat])[0] })
         .attr("cy", function(d){ return projection([d.Start_Lng, d.Start_Lat])[1] })
 		.attr("r", 2.5)
-		.style("fill", function(d){ return colorBubble(d.Severity); })
+		.attr("fill", function(d){ return colorBubble(d.Severity); })
 		.style("opacity", 0.7)
 		.attr("stroke", "black")
 		.attr("stroke-width", 0.1)
@@ -458,13 +461,12 @@ var BubbleMapBuilder = (function() {
 
 		shProperties.oldObj = elem;
         shProperties.oldFill = circle.attr('fill')
-		console.log( shProperties.oldFill)
 
-        if(shProperties.oldFill == '#74C67A') {
+        if(shProperties.oldFill == "#2fcc3a") {
             circle.attr('fill', 'blue')
         }
         else {
-            circle.attr('fill', '#74C67A') //'#74C67A'
+            circle.attr('fill', "#2fcc3a") 
         }
 
 	}
@@ -488,48 +490,28 @@ var BubbleMapBuilder = (function() {
 	}
 
 	function highlight(data){
-		console.log(data)
 
 		var mapData = UtilsModule.buildMapFromArray(data);
-		console.log(mapData)
 
 		if(shProperties.oldObj !== undefined && 
 			mapData.get(shProperties.oldObj.ID) !== undefined) {
-			console.log("qui")
-			shProperties.oldFill = '#74C67A'
+			shProperties.oldFill = "#2fcc3a"
 			console.log(shProperties.oldFill)
 		  }
 		  else if(shProperties.oldObj !== undefined && mapData.get(shProperties.oldObj.ID) == undefined) {
 			shProperties.oldFill = colorBubble(shProperties.oldObj.Severity)
-			console.log("ciao")
 		  }
 	  
-
-		
-		d3.select("g") 
-		.selectAll("circle")
+		d3.select("g").selectAll("circle")
 		.attr('fill',function (d) {
 			if(mapData.get(d.ID) !== undefined) {
-				console.log("holaaaa")
-				return '#74C67A';
+				return "#2fcc3a";
 			}
 
 			return colorBubble(d.Severity);
-		});
+		})
+			
 	
-			/*circle
-			.filter(function(d) {return d => newData.ID == d.ID}) 		
-			.style("fill","#2fcc3a")
-			.attr("stroke", "black")
-			.attr("stroke-width", 0.4)
-			.style("opacity", 0.8)
-			.transition()
-            .duration(400)
-        	.attr('r',6)
-			.transition()
-            .duration(400)
-        	.attr('r',3.5)*/
-		
 		//selectedBubble = data;	
 		computeMean(data);
 
