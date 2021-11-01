@@ -23,7 +23,6 @@ var projection = d3.geo.albers()
 // load geojson 
 window.onload = d3.json("resources/manhattan.geojson", function(error, dataGeojson){
 	
-
 	// create a path generator
 	var path = d3.geo.path()
 		.projection(projection);
@@ -68,6 +67,8 @@ function showTooltipBorough(d) {
 	moveTooltipBorough();
 	tooltipBorough.style("display","block")
 	.html("<center><b>"+d.properties.name+"</b></center>")
+
+	console.log("ciao");
 		
 	d3.select(this)
 	.style("opacity", 0.6)
@@ -80,7 +81,7 @@ function moveTooltipBorough() {
 }
 
 //Create a tooltip, hidden at the start
-function hideTooltipBorough() {
+function hideTooltipBorough(d) {
 	tooltipBorough.style("display","none");
 	if(d3.select(this).attr("selected") === "true"){
 		d3.select(this)
@@ -90,7 +91,6 @@ function hideTooltipBorough() {
 		d3.select(this)
 		.style("opacity", 0.5)
 	}
-			
 }
 
 /*-------------------------------------------SLIDER---------------------------------------*/
@@ -250,9 +250,8 @@ var BubbleMapBuilder = (function() {
 		.html("<b>Id:</b> " + d.ID + "<br>" + "<b>Street:</b> " + d.Street + "<br>" + "<b>Zipcode:</b> "+ d.Zipcode + "<br>" +
 		"<b>Severity:</b> " + d.Severity + "<br>" + "<b>Year:</b> " + year +  "<br>" + "<b>D/N:</b> " + d.Sunrise_Sunset + "<br>" + 
 		"<b>Time:</b> " + hour + "<br>" + "<b>Duration:</b> " + diff + "<br>" + "<b>Season:</b> " + season );
-		d3.select(this).transition()
-		.duration(250)
-		.attr('r',4)
+		d3.select(this)
+		.attr('r',8)
 		.attr('stroke-width',0.5)
 
 		PCAScatterPlotBuilder.singleHighlight(d);
@@ -268,10 +267,9 @@ var BubbleMapBuilder = (function() {
 	//Create a tooltip, hidden at the start
 	function hideTooltip(d) {
 		tooltip.style("display","none");
-		d3.select(this).transition()
-		.duration(400)
+		d3.select(this)
 		.attr("r", 2.5)
-		.attr("stroke-width", 0.1)
+		.attr("stroke-width", 0.1);
 
 		PCAScatterPlotBuilder.resetSingleHighlight(d);
 		parallelBuilder.resetSingleHighlight(d);
@@ -454,13 +452,17 @@ var BubbleMapBuilder = (function() {
 		var circle = d3.select("g") 
 			.selectAll("circle")
 			.filter(d => elem.ID == d.ID)
-        	.transition()
-			.duration(250)
 			.attr('r', 8)
-			.attr('stroke-width', 1.5)
+			.attr('stroke-width', 1.5);
+
+		d3.select("g") 
+            .selectAll('circle').sort(function (a, b) {
+                if (a.ID == elem.ID) return 1;               
+                else return -1;
+            });
 
 		shProperties.oldObj = elem;
-        shProperties.oldFill = circle.attr('fill')
+        shProperties.oldFill = circle._groups[0][0].getAttribute("fill");
 
         if(shProperties.oldFill == "#2fcc3a") {
             circle.attr('fill', 'blue')
@@ -476,17 +478,13 @@ var BubbleMapBuilder = (function() {
 		if(shProperties.oldFill == undefined) {
             shProperties.oldFill = colorBubble(elem.Severity);
         } 
+
 		d3.select("g") 
 			.selectAll("circle")
 			.filter(d => elem.ID == d.ID)
 			.attr('fill', shProperties.oldFill)
-        	.transition()
-			.duration(400)
 			.attr('r',2.5)
-			.attr('stroke-width', 0.1)
-
-		shProperties.oldFill = undefined;	
-		
+			.attr('stroke-width', 0.1);
 	}
 
 	function highlight(data){
@@ -510,9 +508,19 @@ var BubbleMapBuilder = (function() {
 
 			return colorBubble(d.Severity);
 		})
-			
+		.attr("r", function (d) {
+			if(mapData.get(d.ID) !== undefined) {
+				return "8";
+			}
+
+			return "2.5";
+		})
+		.transition()
+		.duration(1500)
+		.attr("r", "2.5")
+		.transition()
+		.duration(1500)
 	
-		//selectedBubble = data;	
 		computeMean(data);
 
 	}

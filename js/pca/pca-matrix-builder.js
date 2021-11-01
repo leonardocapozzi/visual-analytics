@@ -45,6 +45,8 @@ var PCAMatrixBuilder = (function() {
             array[3] = acc["Visibility"];
             array[4] = acc["Humidity"];
             array[5] = acc["Wind_Chill"];
+            array[6] = acc["Temperature"];
+            array[7] = acc["Wind_Speed"];
 
             map.set(acc["ID"], array); 
         });

@@ -85,22 +85,12 @@ var PCAScatterPlotBuilder = (function() {
             .attr('fill',function (d,i) { return '#31a354'})
             .style("opacity", 0.5)
             .on('mouseover', function (d) {
-                d3.select(this)
-                .transition()
-                .duration(250)
-                .attr('r',10)
-                .attr('stroke-width',1.5)
-
+                singleHighlight(d);
                 parallelBuilder.singleHighlight(d);
                 BubbleMapBuilder.onPointerOver(d);
             })
-            .on('mouseout', function (d) {
-                d3.select(this)
-                .transition()
-                .duration(400)
-                .attr('r',4)
-                .attr('stroke-width',0.2)
-
+            .on('mouseout', function (d) {                
+                resetSingleHighlight(d);
                 parallelBuilder.resetSingleHighlight(d);
                 BubbleMapBuilder.onPointerOut(d);
             })
@@ -129,10 +119,12 @@ var PCAScatterPlotBuilder = (function() {
 
             BubbleMapBuilder.redraw(data);
             parallelBuilder.redraw(data);
+            redraw(data);
         }
         else {
             parallelBuilder.highlight(dataSelection);
             BubbleMapBuilder.highlight(dataSelection);
+            highlight(dataSelection);
         }
     }
   
@@ -143,22 +135,13 @@ var PCAScatterPlotBuilder = (function() {
      
         if (selection != null) {
             context.selectAll("circle")
-                .style("fill", function(d){
-                    if ((x(d['X']) > selection[0][0]) && (x(d['X']) < selection[1][0]) && 
-                        (y(d['Y']) > selection[0][1]) && (y(d['Y']) < selection[1][1])) {
-                        return "red"
-                    }
-                    return "#74C67A"})
                 .style("opacity",function(d){
                     if ((x(d['X']) > selection[0][0]) && (x(d['X']) < selection[1][0]) && 
                         (y(d['Y']) > selection[0][1]) && (y(d['Y']) < selection[1][1])) {
                         dataSelection.push(d)
                         return "0.7"
                     }
-                    return "0.2"});
-
-            //BubbleMapBuilder.redraw(dataSelection);
-            //parallelBuilder.highlight(dataSelection);
+                    return "0.3"});
         }
         else
         {
@@ -276,6 +259,12 @@ var PCAScatterPlotBuilder = (function() {
         var circle = context
             .selectAll('circle')
             .filter(d => elem.ID == d.ID)
+        
+        context
+            .selectAll('circle').sort(function (a, b) {
+                if (a.ID == elem.ID) return 1;               
+                else return -1;
+            });
 
         shProperties.oldObj = elem;
         shProperties.oldFill = circle._groups[0][0].getAttribute("fill");
@@ -288,7 +277,7 @@ var PCAScatterPlotBuilder = (function() {
         }
 
         circle
-            .attr('opacity', 0.7)
+            .attr('opacity', 0.9)
             .attr('r', '10');
     }
 
@@ -318,6 +307,12 @@ var PCAScatterPlotBuilder = (function() {
         else {
             shProperties.oldFill = '#31a354';
         }
+
+        context
+            .selectAll('circle').sort(function (a, b) {
+                if (mapData.get(a.ID) !== undefined) return 1;               
+                else return -1;
+            });
 
         context
             .selectAll('circle')

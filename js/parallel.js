@@ -302,6 +302,11 @@ var parallelBuilder = (function() {
     var pathLine = foregroundGlobal
         .filter(d => d.ID == elem.ID);
 
+    foregroundGlobal.sort(function (a, b) {
+      if (a.ID == elem.ID) return 1;               
+      else return -1;
+    });
+
     shProperties.oldObj = elem;
     shProperties.oldFill = pathLine._groups[0][0].style.stroke;
 
@@ -338,11 +343,19 @@ var parallelBuilder = (function() {
       shProperties.oldFill = coloriamo(shProperties.oldObj.Sunrise_Sunset);
     }
 
+    foregroundGlobal.sort(function (a, b) {
+      if (mapData.get(a.ID) !== undefined) return 1;               
+      else return -1;
+    });
+
     foregroundGlobal.style("stroke", function(d) {
         return mapData.get(d.ID) !== undefined ? "red" : coloriamo(d.Sunrise_Sunset);
       })
       .style("stroke-width", function(d) {
-        return mapData.get(d.ID) !== undefined ? "2.8" : "2.2";
+        return mapData.get(d.ID) !== undefined ? "2.8" : "1.0";
+      })
+      .style("opacity", function(d) {
+        return mapData.get(d.ID) !== undefined ? "1" : "0.4";
       });
   }
 
