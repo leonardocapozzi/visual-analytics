@@ -10,9 +10,9 @@ var parallelBuilder = (function() {
   // Color scale: give me a specie name, I return a color
   var coloriamo = d3.scaleOrdinal()
     .domain(["Day", "Night" ])
-    .range([ "#F79256", "#315E26"]);
+    .range([ '#31a354', '#31a354']);
 
-  var margin = {top: 30, right: 10, bottom: 10, left: 10},
+  var margin = {top: 50, right: 0, bottom: 5, left: 95},
         width = 100,
         height = 100;
 
@@ -100,21 +100,19 @@ var parallelBuilder = (function() {
         .attr("d", path)
         .attr("class", function (d) { return "line " + d.Sunrise_Sunset } ) // 2 class for each line: 'line' and the group name
         .style("stroke", function(d){ return( coloriamo(d.Sunrise_Sunset))} )
-        .style("stroke-width", 1.2)
+        .style("stroke-width", 2.2)
         .on("mouseover", function(d){
-          d3.select(this).raise().classed("active", true);
-          d3.select(this).style("stroke", "#d7191c");
+          singleHighlight(d)
 
           PCAScatterPlotBuilder.singleHighlight(d);
           BubbleMapBuilder.onPointerOver(d);
         })
         .on("mouseout", function(d){
-            d3.select(this).style("stroke", function(d) { 
+              resetSingleHighlight(d)
               PCAScatterPlotBuilder.resetSingleHighlight(d);
               BubbleMapBuilder.onPointerOut(d);
               return( coloriamo(d.Sunrise_Sunset))
-            } 
-            )});
+            });
 
     foregroundGlobal = foreground;
 
@@ -131,7 +129,7 @@ var parallelBuilder = (function() {
             background.attr("visibility", "hidden");
           })
           .on("drag", function(d) {
-            dragging[d] = Math.min(width, Math.max(0, d3.event.x));
+            dragging[d] = Math.min(1100, Math.max(0, d3.event.x));
             foreground.attr("d", path);
             dimensions.sort(function(a, b) { return position(a) - position(b); });
             x.domain(dimensions);
@@ -344,7 +342,7 @@ var parallelBuilder = (function() {
         return mapData.get(d.ID) !== undefined ? "red" : coloriamo(d.Sunrise_Sunset);
       })
       .style("stroke-width", function(d) {
-        return mapData.get(d.ID) !== undefined ? "1.8" : "1.2";
+        return mapData.get(d.ID) !== undefined ? "2.8" : "2.2";
       });
   }
 

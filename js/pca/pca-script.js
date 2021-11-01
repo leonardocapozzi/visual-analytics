@@ -82,7 +82,7 @@ var PCAScatterPlotBuilder = (function() {
             .attr('r',4)
             .attr('stroke','black')
             .attr('stroke-width',0.2)
-            .attr('fill',function (d,i) { return '#74C67A'})
+            .attr('fill',function (d,i) { return '#31a354'})
             .style("opacity", 0.5)
             .on('mouseover', function (d) {
                 d3.select(this)
@@ -116,7 +116,7 @@ var PCAScatterPlotBuilder = (function() {
 
     function resetCircleProperty() {
         context.selectAll("circle")
-            .style("fill",function(d) {return '#74C67A'})
+            .style("fill",function(d) {return '#31a354'})
             .style("opacity","0.5")
     }
 
@@ -295,7 +295,7 @@ var PCAScatterPlotBuilder = (function() {
     function resetSingleHighlight(elem) {
 
         if(shProperties.oldFill == undefined) {
-            shProperties.oldFill = '#74C67A';
+            shProperties.oldFill = '#31a354';
         }   
 
         context
@@ -316,7 +316,7 @@ var PCAScatterPlotBuilder = (function() {
             shProperties.oldFill = 'red';
         }
         else {
-            shProperties.oldFill = '#74C67A';
+            shProperties.oldFill = '#31a354';
         }
 
         context
@@ -326,7 +326,7 @@ var PCAScatterPlotBuilder = (function() {
                     return 'red';
                 }
 
-                return '#74C67A';
+                return '#31a354';
             });
     }
 
